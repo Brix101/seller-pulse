@@ -9,7 +9,7 @@ const configSchema = z.object({
   DATABASE_PORT: z.coerce.number().default(5432),
   DATABASE_USER: z.string(),
   DATABASE_PASSWORD: z.string(),
-  DATABASE_NAME: z.string(),
+  DATABASE_NAME: z.string().default('seller-pulse'),
 });
 
 export default configSchema;

@@ -1,14 +1,15 @@
 import { z } from 'zod';
 
 const configSchema = z.object({
-  port: z.number().default(3000),
-  database: z.object({
-    host: z.string(),
-    port: z.number().default(5432),
-    username: z.string(),
-    password: z.string(),
-    name: z.string(),
-  }),
+  NODE_ENV: z
+    .enum(['development', 'production', 'test'])
+    .default('development'),
+  PORT: z.number().default(3000),
+  DATABASE_HOST: z.string(),
+  DATABASE_PORT: z.coerce.number().default(5432),
+  DATABASE_USER: z.string(),
+  DATABASE_PASSWORD: z.string(),
+  DATABASE_NAME: z.string(),
 });
 
 export default configSchema;

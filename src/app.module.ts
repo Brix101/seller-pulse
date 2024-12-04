@@ -1,5 +1,7 @@
+import { MikroOrmModule } from '@mikro-orm/nestjs';
+import { PostgreSqlDriver } from '@mikro-orm/postgresql';
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ClientModule } from './client/client.module';
@@ -15,7 +17,18 @@ import { StoreModule } from './store/store.module';
   imports: [
     ConfigModule.forRoot({
       load: [configuration, databaseConfig],
-      validate: (config: Record<string, any>) => configSchema.parse(config),
+      validate: (config) => configSchema.parse(config),
+      isGlobal: true,
+    }),
+    MikroOrmModule.forRootAsync({
+      useFactory: (configService) => ({
+        ...configService.get('database'),
+        entities: ['./dist/**/*.entity.js'],
+        entitiesTs: ['./src/**/*.entity.ts'],
+        debug: true,
+        driver: PostgreSqlDriver,
+      }),
+      inject: [ConfigService],
     }),
     StoreModule,
     ClientModule,

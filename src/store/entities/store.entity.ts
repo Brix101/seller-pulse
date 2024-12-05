@@ -7,8 +7,8 @@ import {
   Opt,
   Property,
 } from '@mikro-orm/core';
-import { Client } from 'src/client/entities/client.entity';
-import { BaseEntity } from 'src/common/entities/base.entity';
+import { Client } from '../../client/entities/client.entity';
+import { BaseEntity } from '../../common/entities/base.entity';
 import { StoreRepository } from '../store.repository';
 
 @Entity({ repository: () => StoreRepository })

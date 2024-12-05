@@ -1,6 +1,6 @@
 import { Cascade, Entity, Enum, ManyToOne, Property } from '@mikro-orm/core';
-import { BaseEntity } from 'src/common/entities/base.entity';
-import { Store } from 'src/store/entities/store.entity';
+import { BaseEntity } from '../../common/entities/base.entity';
+import { Store } from '../../store/entities/store.entity';
 
 export enum ClientProvider {
   SELLING_PARTNER_API = 'SELLING_PARTNER_API',

@@ -12,6 +12,10 @@ import { SaleModule } from './sale/sale.module';
 import { StoreModule } from './store/store.module';
 import { AmznModule } from './amzn/amzn.module';
 import { HealthModule } from './health/health.module';
+import { TsMorphMetadataProvider } from '@mikro-orm/reflection';
+import { EntityGenerator } from '@mikro-orm/entity-generator';
+import { Migrator } from '@mikro-orm/migrations';
+import { SqlHighlighter } from '@mikro-orm/sql-highlighter';
 
 @Module({
   imports: [
@@ -26,6 +30,10 @@ import { HealthModule } from './health/health.module';
         debug: configService.get('nodeEnv') === 'development',
         autoLoadEntities: true,
         driver: PostgreSqlDriver,
+        highlighter: new SqlHighlighter(),
+        metadataProvider: TsMorphMetadataProvider,
+        registerRequestContext: false,
+        extensions: [Migrator, EntityGenerator],
       }),
       inject: [ConfigService],
     }),

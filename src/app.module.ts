@@ -2,8 +2,6 @@ import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { PostgreSqlDriver } from '@mikro-orm/postgresql';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ClientModule } from './client/client.module';
 import configSchema from './config/config.schema';
 import configuration from './config/configuration';
@@ -39,8 +37,8 @@ import { HealthModule } from './health/health.module';
     AmznModule,
     HealthModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
 

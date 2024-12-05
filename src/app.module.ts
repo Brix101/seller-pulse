@@ -13,6 +13,7 @@ import { MarketplaceModule } from './marketplace/marketplace.module';
 import { SaleModule } from './sale/sale.module';
 import { StoreModule } from './store/store.module';
 import { AmznModule } from './amzn/amzn.module';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { AmznModule } from './amzn/amzn.module';
     MarketplaceModule,
     SaleModule,
     AmznModule,
+    HealthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

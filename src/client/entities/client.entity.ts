@@ -1,6 +1,7 @@
 import { Cascade, Entity, Enum, ManyToOne, Property } from '@mikro-orm/core';
 import { BaseEntity } from '../../common/entities/base.entity';
 import { Store } from '../../store/entities/store.entity';
+import { nullable } from 'zod';
 
 export enum ClientProvider {
   SELLING_PARTNER_API = 'SELLING_PARTNER_API',
@@ -39,13 +40,13 @@ export class Client extends BaseEntity {
   @Enum({ items: () => GrantType })
   grantType: GrantType;
 
-  @Property()
+  @Property({ columnType: 'text', lazy: true })
   refreshToken: string;
 
-  @Enum({ items: () => LWAExceptionErrorCode })
+  @Enum({ items: () => LWAExceptionErrorCode, nullable: true })
   error: LWAExceptionErrorCode;
 
-  @Property()
+  @Property({ columnType: 'text', lazy: true, nullable: true })
   errorDescription: string;
 
   @ManyToOne(() => Store, {

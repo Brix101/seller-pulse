@@ -4,9 +4,10 @@ import { Store } from './entities/store.entity';
 import { StoreController } from './store.controller';
 import { StoreService } from './store.service';
 import { StoreSubscriber } from './store.subscriber';
+import { ClientModule } from 'src/client/client.module';
 
 @Module({
-  imports: [MikroOrmModule.forFeature([Store])],
+  imports: [MikroOrmModule.forFeature([Store]), ClientModule],
   controllers: [StoreController],
   providers: [StoreService, StoreSubscriber],
 })

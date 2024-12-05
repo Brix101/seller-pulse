@@ -273,13 +273,12 @@
         },
         "refresh_token": {
           "name": "refresh_token",
-          "type": "varchar(255)",
+          "type": "text",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "length": 255,
-          "mappedType": "string"
+          "mappedType": "text"
         },
         "error": {
           "name": "error",
@@ -287,18 +286,17 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
           "mappedType": "enum"
         },
         "error_description": {
           "name": "error_description",
-          "type": "varchar(255)",
+          "type": "text",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
-          "length": 255,
-          "mappedType": "string"
+          "nullable": true,
+          "mappedType": "text"
         },
         "store_id": {
           "name": "store_id",

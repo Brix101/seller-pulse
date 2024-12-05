@@ -22,5 +22,5 @@ export class Store extends BaseEntity {
   isActive: boolean & Opt = true;
 
   @OneToMany(() => Client, (c) => c.store, { cascade: [Cascade.ALL] })
-  client = new Collection<Client>(this);
+  clients = new Collection<Client>(this);
 }

@@ -7,10 +7,16 @@ import {
 import { CreateStoreDto } from './dto/create-store.dto';
 import { UpdateStoreDto } from './dto/update-store.dto';
 import { Store } from './entities/store.entity';
+import { CreateClientDto } from 'src/client/dto/create-client.dto';
+import { ClientService } from 'src/client/client.service';
+import { Client } from 'src/client/entities/client.entity';
 
 @Injectable()
 export class StoreService {
-  constructor(private readonly em: EntityManager) {}
+  constructor(
+    private readonly em: EntityManager,
+    private readonly clientService: ClientService,
+  ) {}
 
   async create(createStoreDto: CreateStoreDto) {
     try {
@@ -80,6 +86,17 @@ export class StoreService {
       const store = await this.findOne(id);
 
       return fork.nativeDelete(Store, { id: store.id });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async addClient(storeId: number, createClientDto: CreateClientDto) {
+    try {
+      const store = await this.findOne(storeId);
+      const client = await this.clientService.create(store, createClientDto);
+
+      return client;
     } catch (error) {
       throw error;
     }

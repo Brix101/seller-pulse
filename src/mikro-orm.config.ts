@@ -18,7 +18,7 @@ export default defineConfig({
   entities: ['dist/**/*.entity.js'],
   entitiesTs: ['src/**/*.entity.ts'],
   debug: process.env.NODE_ENV !== 'production',
-  allowGlobalContext: true,
+  // allowGlobalContext: true,
   driver: PostgreSqlDriver,
   highlighter: new SqlHighlighter(),
   metadataProvider: TsMorphMetadataProvider,

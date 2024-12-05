@@ -1,30 +1,56 @@
 import { Injectable } from '@nestjs/common';
 import { CreateStoreDto } from './dto/create-store.dto';
 import { UpdateStoreDto } from './dto/update-store.dto';
-import { StoreRepository } from './store.repository';
 import { Store } from './entities/store.entity';
+import { StoreRepository } from './store.repository';
+import { EntityManager, wrap } from '@mikro-orm/postgresql';
 
 @Injectable()
 export class StoreService {
-  constructor(private readonly storeRepository: StoreRepository) {}
+  constructor(
+    private readonly storeRepository: StoreRepository,
+    private readonly em: EntityManager,
+  ) {}
 
-  create(createStoreDto: CreateStoreDto) {
-    return 'This action adds a new store';
+  async create(createStoreDto: CreateStoreDto) {
+    const fork = this.em.fork();
+    const store = fork.create(Store, createStoreDto);
+
+    await fork.persistAndFlush(store);
+
+    return store;
   }
 
   async findAll(): Promise<Store[]> {
-    return this.storeRepository.findAll();
+    const fork = this.em.fork();
+    return fork.findAll(Store, {
+      where: { isActive: true },
+    });
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} store`;
+    const fork = this.em.fork();
+
+    return fork.findOneOrFail(Store, {
+      id,
+    });
   }
 
-  update(id: number, updateStoreDto: UpdateStoreDto) {
-    return `This action updates a #${id} store`;
+  async update(id: number, updateStoreDto: UpdateStoreDto) {
+    const fork = this.em.fork();
+
+    const store = await fork.findOneOrFail(Store, { id });
+
+    wrap(store).assign(updateStoreDto);
+
+    await fork.persistAndFlush(store);
+
+    return store;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} store`;
+  async remove(id: number) {
+    const fork = this.em.fork();
+
+    return fork.nativeDelete(Store, { id });
   }
 }

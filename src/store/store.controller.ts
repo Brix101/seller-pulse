@@ -45,4 +45,9 @@ export class StoreController {
   addClient(@Param('id') id: string, @Body() createClientDto: CreateClientDto) {
     return this.storeService.addClient(+id, createClientDto);
   }
+
+  @Get(':id/client')
+  getClients(@Param('id') id: string) {
+    return this.storeService.getClients(+id);
+  }
 }

@@ -4,12 +4,11 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
+import { ClientService } from 'src/client/client.service';
+import { CreateClientDto } from 'src/client/dto/create-client.dto';
 import { CreateStoreDto } from './dto/create-store.dto';
 import { UpdateStoreDto } from './dto/update-store.dto';
 import { Store } from './entities/store.entity';
-import { CreateClientDto } from 'src/client/dto/create-client.dto';
-import { ClientService } from 'src/client/client.service';
-import { Client } from 'src/client/entities/client.entity';
 
 @Injectable()
 export class StoreService {
@@ -97,6 +96,15 @@ export class StoreService {
       const client = await this.clientService.create(store, createClientDto);
 
       return client;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getClients(id: number) {
+    try {
+      const store = await this.findOne(id);
+      return this.clientService.findAll(store);
     } catch (error) {
       throw error;
     }

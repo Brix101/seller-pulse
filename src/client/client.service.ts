@@ -4,9 +4,9 @@ import {
   InternalServerErrorException,
   Logger,
 } from '@nestjs/common';
+import { Store } from 'src/store/entities/store.entity';
 import { CreateClientDto } from './dto/create-client.dto';
 import { Client } from './entities/client.entity';
-import { Store } from 'src/store/entities/store.entity';
 
 @Injectable()
 export class ClientService {
@@ -25,6 +25,23 @@ export class ClientService {
     } catch (error) {
       this.logger.fatal(error);
 
+      throw new InternalServerErrorException(
+        error.message || 'Something went wrong',
+      );
+    }
+  }
+
+  async findAll(store: Store) {
+    try {
+      const fork = this.em.fork();
+      const clients = fork.findAll(Client, {
+        where: {
+          store,
+        },
+      });
+
+      return clients;
+    } catch (error) {
       throw new InternalServerErrorException(
         error.message || 'Something went wrong',
       );

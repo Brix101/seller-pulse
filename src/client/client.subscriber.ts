@@ -14,6 +14,9 @@ export class ClientSubscriber implements EventSubscriber<Client> {
   }
 
   async afterInsert(event: EventArgs<Client>) {
+    console.log(
+      '++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++',
+    );
     console.log(`A client was inserted: ${event.entity}`);
   }
 }

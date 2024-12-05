@@ -24,8 +24,8 @@ import { AmznModule } from './amzn/amzn.module';
     MikroOrmModule.forRootAsync({
       useFactory: (configService) => ({
         ...configService.get('database'),
+        debug: configService.get('nodeEnv') === 'development',
         autoLoadEntities: true,
-        debug: true,
         driver: PostgreSqlDriver,
       }),
       inject: [ConfigService],

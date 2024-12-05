@@ -24,8 +24,7 @@ import { AmznModule } from './amzn/amzn.module';
     MikroOrmModule.forRootAsync({
       useFactory: (configService) => ({
         ...configService.get('database'),
-        entities: ['./dist/**/*.entity.js'],
-        entitiesTs: ['./src/**/*.entity.ts'],
+        autoLoadEntities: true,
         debug: true,
         driver: PostgreSqlDriver,
       }),
@@ -42,3 +41,18 @@ import { AmznModule } from './amzn/amzn.module';
   providers: [AppService],
 })
 export class AppModule {}
+
+// implements NestModule, OnModuleInit {
+//   constructor(private readonly orm: MikroORM) {}
+//
+//   async onModuleInit(): Promise<void> {
+//     await this.orm.getMigrator().up();
+//   }
+//
+//   // for some reason the auth middlewares in profile and article modules are fired before the request context one,
+//   // so they would fail to access contextual EM. by registering the middleware directly in AppModule, we can get
+//   // around this issue
+//   configure(consumer: MiddlewareConsumer): void {
+//     // consumer.apply(MikroOrmMiddleware).forRoutes('*');
+//   }
+// }

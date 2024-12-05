@@ -4,6 +4,7 @@ import { Migrator } from '@mikro-orm/migrations';
 import { PostgreSqlDriver } from '@mikro-orm/postgresql';
 import { TsMorphMetadataProvider } from '@mikro-orm/reflection';
 import { SqlHighlighter } from '@mikro-orm/sql-highlighter';
+import { Logger } from '@nestjs/common';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
@@ -17,10 +18,12 @@ export default defineConfig({
   entities: ['dist/**/*.entity.js'],
   entitiesTs: ['src/**/*.entity.ts'],
   debug: process.env.NODE_ENV !== 'production',
+  allowGlobalContext: true,
   driver: PostgreSqlDriver,
   highlighter: new SqlHighlighter(),
   metadataProvider: TsMorphMetadataProvider,
   // @ts-expect-error nestjs adapter option
   registerRequestContext: false,
+  logger: (message) => Logger.log(message, 'MikroORM'),
   extensions: [Migrator, EntityGenerator],
 });

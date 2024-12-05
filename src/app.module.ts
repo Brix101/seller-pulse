@@ -1,7 +1,6 @@
 import { MikroOrmModule } from '@mikro-orm/nestjs';
-import { PostgreSqlDriver } from '@mikro-orm/postgresql';
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { ClientModule } from './client/client.module';
 import configSchema from './config/config.schema';
 import configuration from './config/configuration';
@@ -12,31 +11,17 @@ import { SaleModule } from './sale/sale.module';
 import { StoreModule } from './store/store.module';
 import { AmznModule } from './amzn/amzn.module';
 import { HealthModule } from './health/health.module';
-import { TsMorphMetadataProvider } from '@mikro-orm/reflection';
-import { EntityGenerator } from '@mikro-orm/entity-generator';
-import { Migrator } from '@mikro-orm/migrations';
-import { SqlHighlighter } from '@mikro-orm/sql-highlighter';
+import mikroOrmConfig from './mikro-orm.config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
+      envFilePath: ['.env.development', '.env'],
       load: [configuration, databaseConfig],
       validate: (config) => configSchema.parse(config),
       isGlobal: true,
     }),
-    MikroOrmModule.forRootAsync({
-      useFactory: (configService) => ({
-        ...configService.get('database'),
-        debug: configService.get('nodeEnv') === 'development',
-        autoLoadEntities: true,
-        driver: PostgreSqlDriver,
-        highlighter: new SqlHighlighter(),
-        metadataProvider: TsMorphMetadataProvider,
-        registerRequestContext: false,
-        extensions: [Migrator, EntityGenerator],
-      }),
-      inject: [ConfigService],
-    }),
+    MikroOrmModule.forRoot(mikroOrmConfig),
     StoreModule,
     ClientModule,
     ListingModule,
@@ -49,18 +34,3 @@ import { SqlHighlighter } from '@mikro-orm/sql-highlighter';
   providers: [],
 })
 export class AppModule {}
-
-// implements NestModule, OnModuleInit {
-//   constructor(private readonly orm: MikroORM) {}
-//
-//   async onModuleInit(): Promise<void> {
-//     await this.orm.getMigrator().up();
-//   }
-//
-//   // for some reason the auth middlewares in profile and article modules are fired before the request context one,
-//   // so they would fail to access contextual EM. by registering the middleware directly in AppModule, we can get
-//   // around this issue
-//   configure(consumer: MiddlewareConsumer): void {
-//     // consumer.apply(MikroOrmMiddleware).forRoutes('*');
-//   }
-// }

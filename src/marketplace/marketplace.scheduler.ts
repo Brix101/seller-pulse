@@ -39,13 +39,9 @@ export class MarketplaceScheduler {
             await em.upsert(Marketplace, newMarketplace);
           }
         });
-
-        console.log(marketplaces);
       } catch (err) {
         this.logger.error(err);
       }
     }
-
-    this.logger.debug('Called when the current second is 30');
   }
 }

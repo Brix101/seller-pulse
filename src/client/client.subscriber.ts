@@ -5,18 +5,15 @@ import { Client } from './entities/client.entity';
 
 @Injectable()
 export class ClientSubscriber implements EventSubscriber<Client> {
-  constructor(em: EntityManager) {
-    em.getEventManager().registerSubscriber(this);
+  constructor(private readonly em: EntityManager) {
+    this.em.getEventManager().registerSubscriber(this);
   }
 
   getSubscribedEntities(): EntityName<Client>[] {
     return [Client];
   }
 
-  async afterInsert(event: EventArgs<Client>) {
-    console.log(
-      '++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++',
-    );
-    console.log(`A client was inserted: ${event.entity}`);
+  async afterCreate(args: EventArgs<Client>) {
+    console.log(args.entity);
   }
 }

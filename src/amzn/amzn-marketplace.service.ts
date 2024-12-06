@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { firstValueFrom } from 'rxjs';
 import { Client } from 'src/client/entities/client.entity';
 import { SP_API_URL } from 'src/common/constants';
@@ -11,6 +11,7 @@ import {
 
 @Injectable()
 export class AmznMarketplaceService {
+  private readonly logger = new Logger(AmznMarketplaceService.name);
   private marketplaceEntries: Array<MarketplaceEntry> = [
     {
       marketplaceId: 'A2EUQ1WTGCTBG2',
@@ -167,40 +168,45 @@ export class AmznMarketplaceService {
   }
 
   async getMarketplaceParticipations(client: Client) {
-    const accessToken = await this.lwaService.getAccessToken(client);
+    try {
+      const accessToken = await this.lwaService.getAccessToken(client);
 
-    const { data } = await firstValueFrom(
-      this.httpService.get<MarketplaceParticipationResponse>(
-        SP_API_URL.NA + '/sellers/v1/marketplaceParticipations',
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
+      const { data } = await firstValueFrom(
+        this.httpService.get<MarketplaceParticipationResponse>(
+          SP_API_URL.NA + '/sellers/v1/marketplaceParticipations',
+          {
+            headers: {
+              'x-amz-access-token': accessToken,
+            },
           },
-          params: {},
-        },
-      ),
-    );
+        ),
+      );
 
-    const marketplaces = data.payload
-      .map((entry) => {
-        const marketplace = this.findOne({
-          marketplaceId: entry.marketplace.id,
-        });
+      const marketplaces = data.payload
+        .map((entry) => {
+          const marketplace = this.findOne({
+            marketplaceId: entry.marketplace.id,
+          });
 
-        if (!marketplace) {
-          return null;
-        }
+          if (!marketplace) {
+            return null;
+          }
 
-        const { id, ...entryData } = entry.marketplace;
+          const { id, ...entryData } = entry.marketplace;
 
-        return {
-          ...marketplace,
-          ...entryData,
-          marketplaceId: id,
-        };
-      })
-      .filter((entry) => entry !== null);
+          return {
+            ...marketplace,
+            ...entryData,
+            marketplaceId: id,
+          };
+        })
+        .filter((entry) => entry !== null);
 
-    return marketplaces;
+      return marketplaces;
+    } catch (error) {
+      console.log(error?.response?.data);
+      this.logger.error(error);
+      throw error;
+    }
   }
 }

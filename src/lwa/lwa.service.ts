@@ -2,10 +2,10 @@ import { EntityManager } from '@mikro-orm/postgresql';
 import { HttpService } from '@nestjs/axios';
 import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { firstValueFrom } from 'rxjs';
+import { catchError, firstValueFrom } from 'rxjs';
 import { Client } from 'src/client/entities/client.entity';
+import { RequestAccessTokenDto } from './dto/request-access-token.dto';
 import { TokenErrorDto } from './dto/token-error.dto';
-import { TokenRequestMeta } from './dto/token-request-meta';
 import { RefreshResponseDto } from './dto/token-response.dto';
 import { LWAExceptionErrorCode } from './exceptions/exception-error-code';
 
@@ -24,31 +24,41 @@ export class LwaService {
     client: Client,
   ): Promise<RefreshResponseDto | null> {
     const fork = this.em.fork();
-    const refreshData = client.toTokenRequestMeta();
+    const requestAccessTokenDto = client.toRequestAcessTokenDTO();
 
-    const { data, status } = await firstValueFrom(
-      this.httpService.post<
-        RefreshResponseDto & TokenErrorDto,
-        TokenRequestMeta
-      >(this.URL, refreshData),
+    this.logger.debug(`Refreshing token for client ${client.clientId}`);
+
+    const { data } = await firstValueFrom(
+      this.httpService
+        .post<
+          RefreshResponseDto & TokenErrorDto,
+          RequestAccessTokenDto
+        >(this.URL, requestAccessTokenDto)
+        .pipe(
+          catchError(async (error) => {
+            console.log(error);
+            if (error.response) {
+              const data = error.response.data;
+
+              const errorCode =
+                LWAExceptionErrorCode[
+                  data.error as keyof typeof LWAExceptionErrorCode
+                ] || LWAExceptionErrorCode.other;
+
+              const errorDescription = data.error_description;
+
+              fork.assign(client, { error: errorCode, errorDescription });
+              await fork.persistAndFlush(client);
+
+              this.logger.error(
+                `Error refreshing token for client ${client.clientId}: ${errorDescription}`,
+              );
+            }
+
+            throw error;
+          }),
+        ),
     );
-
-    if (status !== 200) {
-      const error =
-        LWAExceptionErrorCode[
-          data.error as unknown as keyof typeof LWAExceptionErrorCode
-        ] || LWAExceptionErrorCode.other;
-      const errorDescription = data.error_description || 'Something went wrong';
-
-      fork.assign(client, { error, errorDescription });
-      await fork.persistAndFlush(client);
-
-      this.logger.error(
-        `Error refreshing token for client ${client.clientId}: ${errorDescription}`,
-      );
-
-      return null;
-    }
 
     return data;
   }

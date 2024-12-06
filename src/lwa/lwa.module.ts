@@ -5,5 +5,6 @@ import { LwaService } from './lwa.service';
 @Module({
   imports: [HttpModule],
   providers: [LwaService],
+  exports: [LwaService],
 })
 export class LwaModule {}

@@ -51,7 +51,11 @@ export class ClientService {
 
   async findAll() {
     try {
-      const clients = await this.clientRepository.findAll();
+      const clients = await this.clientRepository.findAll({
+        where: {
+          error: null,
+        },
+      });
 
       return clients;
     } catch (error) {

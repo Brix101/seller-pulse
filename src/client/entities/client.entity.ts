@@ -10,7 +10,7 @@ import {
   Unique,
 } from '@mikro-orm/core';
 import { BaseEntity } from '../../common/entities/base.entity';
-import { TokenRequestMeta } from '../../lwa/dto/token-request-meta';
+import { RequestAccessTokenDto } from '../../lwa/dto/request-access-token.dto';
 import { LWAExceptionErrorCode } from '../../lwa/exceptions/exception-error-code';
 import { Marketplace } from '../../marketplace/entities/marketplace.entity';
 import { Store } from '../../store/entities/store.entity';
@@ -64,12 +64,12 @@ export class Client extends BaseEntity {
   @OneToMany(() => Marketplace, (m) => m.client, { cascade: [Cascade.ALL] })
   marketplaces = new Collection<Marketplace>(this);
 
-  toTokenRequestMeta(): TokenRequestMeta {
+  toRequestAcessTokenDTO(): RequestAccessTokenDto {
     return {
-      clientId: this.clientId,
-      clientSecret: this.clientSecret,
-      grantType: this.grantType,
-      refreshToken: this.refreshToken,
+      client_id: this.clientId,
+      client_secret: this.clientSecret,
+      grant_type: this.grantType,
+      refresh_token: this.refreshToken,
     };
   }
 }

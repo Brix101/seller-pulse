@@ -162,12 +162,24 @@
         },
         "error": {
           "name": "error",
-          "type": "smallint",
+          "type": "text",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": true,
           "default": "null",
+          "enumItems": [
+            "access_denied",
+            "invalid_grant",
+            "invalid_request",
+            "invalid_scope",
+            "server_error",
+            "unsupported_grant_type",
+            "temporarily_unavailable",
+            "unauthorized_client",
+            "invalid_client",
+            "other"
+          ],
           "mappedType": "enum"
         },
         "error_description": {
@@ -347,6 +359,17 @@
       "name": "marketplace",
       "schema": "public",
       "indexes": [
+        {
+          "keyName": "marketplace_marketplace_id_client_id_unique",
+          "columnNames": [
+            "marketplace_id",
+            "client_id"
+          ],
+          "composite": true,
+          "constraint": true,
+          "primary": false,
+          "unique": true
+        },
         {
           "keyName": "marketplace_pkey",
           "columnNames": [

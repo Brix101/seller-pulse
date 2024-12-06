@@ -1,5 +1,5 @@
 import { Transform } from 'class-transformer';
-import { IsString, IsBoolean } from 'class-validator';
+import { IsBoolean, IsString } from 'class-validator';
 
 export class CreateStoreDto {
   @IsString()
@@ -7,5 +7,5 @@ export class CreateStoreDto {
 
   @IsBoolean()
   @Transform(({ value }) => value === 'true')
-  isActive: boolean = true;
+  isActive?: boolean = true;
 }

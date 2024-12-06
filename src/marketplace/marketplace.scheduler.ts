@@ -7,7 +7,7 @@ import { ClientService } from 'src/client/client.service';
 export class MarketplaceScheduler {
   private logger = new Logger(MarketplaceScheduler.name);
 
-  constructor(
+  constructor(postgres
     private readonly orm: MikroORM,
     private readonly clientService: ClientService,
   ) {}

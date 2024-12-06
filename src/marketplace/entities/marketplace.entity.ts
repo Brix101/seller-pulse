@@ -4,6 +4,7 @@ import {
   EntityRepositoryType,
   ManyToOne,
   Property,
+  Unique,
 } from '@mikro-orm/core';
 import { Client } from '../../client/entities/client.entity';
 import { BaseEntity } from '../../common/entities/base.entity';
@@ -12,6 +13,7 @@ import { MarketplaceRepository } from '../marketplace.repository';
 @Entity({
   repository: () => MarketplaceRepository,
 })
+@Unique({ properties: ['marketplaceId', 'client'] })
 export class Marketplace extends BaseEntity {
   [EntityRepositoryType]?: MarketplaceRepository;
 

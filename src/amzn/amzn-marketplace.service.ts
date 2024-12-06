@@ -1,5 +1,13 @@
+import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
-import { MarketplaceEntry } from './dto/marketplace.dto';
+import { firstValueFrom } from 'rxjs';
+import { Client } from 'src/client/entities/client.entity';
+import { SP_API_URL } from 'src/common/constants';
+import { LwaService } from 'src/lwa/lwa.service';
+import {
+  MarketplaceEntry,
+  MarketplaceParticipationResponse,
+} from './dto/marketplace.dto';
 
 @Injectable()
 export class AmznMarketplaceService {
@@ -138,6 +146,11 @@ export class AmznMarketplaceService {
     },
   ];
 
+  constructor(
+    private readonly httpService: HttpService,
+    private readonly lwaService: LwaService,
+  ) {}
+
   /**
    * Filters the list of Amazon marketplaces based on the provided criteria.
    *
@@ -151,5 +164,43 @@ export class AmznMarketplaceService {
         return entry[key] === filter[key];
       });
     });
+  }
+
+  async getMarketplaceParticipations(client: Client) {
+    const accessToken = await this.lwaService.getAccessToken(client);
+
+    const { data } = await firstValueFrom(
+      this.httpService.get<MarketplaceParticipationResponse>(
+        SP_API_URL.NA + '/sellers/v1/marketplaceParticipations',
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          params: {},
+        },
+      ),
+    );
+
+    const marketplaces = data.payload
+      .map((entry) => {
+        const marketplace = this.findOne({
+          marketplaceId: entry.marketplace.id,
+        });
+
+        if (!marketplace) {
+          return null;
+        }
+
+        const { id, ...entryData } = entry.marketplace;
+
+        return {
+          ...marketplace,
+          ...entryData,
+          marketplaceId: id,
+        };
+      })
+      .filter((entry) => entry !== null);
+
+    return marketplaces;
   }
 }

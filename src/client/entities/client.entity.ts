@@ -1,5 +1,4 @@
 import {
-  ArrayCollection,
   Cascade,
   Collection,
   Entity,
@@ -11,6 +10,8 @@ import {
 import { BaseEntity } from '../../common/entities/base.entity';
 import { Store } from '../../store/entities/store.entity';
 import { Marketplace } from '../../marketplace/entities/marketplace.entity';
+import { LWAExceptionErrorCode } from '../../lwa/exceptions/exception-error-code';
+import { TokenRequestMeta } from '../../lwa/dto/token-request-meta';
 
 export enum ClientProvider {
   SELLING_PARTNER_API = 'SELLING_PARTNER_API',
@@ -20,19 +21,6 @@ export enum ClientProvider {
 export enum GrantType {
   CLIENT_CREDENTIALS = 'client_credentials',
   REFRESH_TOKEN = 'refresh_token',
-}
-
-export enum LWAExceptionErrorCode {
-  access_denied,
-  invalid_grant,
-  invalid_request,
-  invalid_scope,
-  server_error,
-  unsupported_grant_type,
-  temporarily_unavailable,
-  unauthorized_client,
-  invalid_client,
-  other,
 }
 
 @Entity()
@@ -69,4 +57,13 @@ export class Client extends BaseEntity {
 
   @OneToMany(() => Marketplace, (m) => m.client, { cascade: [Cascade.ALL] })
   marketplaces = new Collection<Marketplace>(this);
+
+  toTokenRequestMeta(): TokenRequestMeta {
+    return {
+      clientId: this.clientId,
+      clientSecret: this.clientSecret,
+      grantType: this.grantType,
+      refreshToken: this.refreshToken,
+    };
+  }
 }

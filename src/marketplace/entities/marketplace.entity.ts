@@ -1,9 +1,20 @@
-import { Cascade, Entity, ManyToOne, Property } from '@mikro-orm/core';
-import { BaseEntity } from '../../common/entities/base.entity';
+import {
+  Cascade,
+  Entity,
+  EntityRepositoryType,
+  ManyToOne,
+  Property,
+} from '@mikro-orm/core';
 import { Client } from '../../client/entities/client.entity';
+import { BaseEntity } from '../../common/entities/base.entity';
+import { MarketplaceRepository } from '../marketplace.repository';
 
-@Entity()
+@Entity({
+  repository: () => MarketplaceRepository,
+})
 export class Marketplace extends BaseEntity {
+  [EntityRepositoryType]?: MarketplaceRepository;
+
   @Property()
   name: string;
 

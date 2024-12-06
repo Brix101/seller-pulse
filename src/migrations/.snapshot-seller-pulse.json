@@ -346,6 +346,16 @@
           "length": 255,
           "mappedType": "string"
         },
+        "region": {
+          "name": "region",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
         "client_id": {
           "name": "client_id",
           "type": "int",

@@ -3,6 +3,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { AmznMarketplaceService } from 'src/amzn/amzn-marketplace.service';
 import { ClientService } from 'src/client/client.service';
+import { Marketplace } from './entities/marketplace.entity';
 
 @Injectable()
 export class MarketplaceScheduler {
@@ -16,7 +17,7 @@ export class MarketplaceScheduler {
 
   // @Cron('0 0 0 * * *')
   // @Cron('30 * * * * *')
-  @Cron(CronExpression.EVERY_30_SECONDS)
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   @CreateRequestContext()
   async handlerCron() {
     const clients = await this.clientService.findAll();
@@ -27,6 +28,17 @@ export class MarketplaceScheduler {
           await this.amznMarketplaceService.getMarketplaceParticipations(
             client,
           );
+
+        await this.orm.em.transactional(async (em) => {
+          for (const marketplace of marketplaces) {
+            const newMarketplace = em.create(Marketplace, {
+              ...marketplace,
+              client,
+            });
+
+            await em.upsert(Marketplace, newMarketplace);
+          }
+        });
 
         console.log(marketplaces);
       } catch (err) {

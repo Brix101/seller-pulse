@@ -38,6 +38,9 @@ export class Marketplace extends BaseEntity {
   @Property()
   domainName: string;
 
+  @Property()
+  region: string;
+
   @ManyToOne(() => Client, {
     cascade: [Cascade.PERSIST, Cascade.REMOVE],
     nullable: false,

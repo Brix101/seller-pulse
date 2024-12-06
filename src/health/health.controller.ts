@@ -3,7 +3,6 @@ import {
   HealthCheck,
   HealthCheckService,
   HttpHealthIndicator,
-  MemoryHealthIndicator,
   MikroOrmHealthIndicator,
 } from '@nestjs/terminus';
 
@@ -11,7 +10,6 @@ import {
 export class HealthController {
   constructor(
     private health: HealthCheckService,
-    private memory: MemoryHealthIndicator,
     private http: HttpHealthIndicator,
     private mikroOrm: MikroOrmHealthIndicator,
   ) {}
@@ -20,10 +18,22 @@ export class HealthController {
   @HealthCheck()
   check() {
     return this.health.check([
-      () => this.memory.checkHeap('memory_heap', 150 * 1024 * 1024),
-      () => this.memory.checkRSS('memory_rss', 300 * 1024 * 1024),
       () => this.mikroOrm.pingCheck('database'),
-      () => this.http.pingCheck('nestjs-docs', 'https://docs.nestjs.com'),
+      () =>
+        this.http.pingCheck(
+          'AWS region: us-east-1',
+          'https://sellingpartnerapi-na.amazon.com',
+        ),
+      () =>
+        this.http.pingCheck(
+          'AWS region: eu-west-1',
+          'https://sellingpartnerapi-eu.amazon.com',
+        ),
+      () =>
+        this.http.pingCheck(
+          'AWS region: us-west-2',
+          'https://sellingpartnerapi-fe.amazon.com',
+        ),
     ]);
   }
 }

@@ -7,6 +7,7 @@ import {
   ManyToOne,
   OneToMany,
   Property,
+  Unique,
 } from '@mikro-orm/core';
 import { BaseEntity } from '../../common/entities/base.entity';
 import { TokenRequestMeta } from '../../lwa/dto/token-request-meta';
@@ -26,6 +27,7 @@ export enum GrantType {
 }
 
 @Entity({ repository: () => ClientRepository })
+@Unique({ properties: ['clientId', 'store'] })
 export class Client extends BaseEntity {
   [EntityRepositoryType]?: ClientRepository;
 

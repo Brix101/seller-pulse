@@ -1,5 +1,10 @@
-import { EntityManager, NotFoundError } from '@mikro-orm/postgresql';
 import {
+  EntityManager,
+  NotFoundError,
+  UniqueConstraintViolationException,
+} from '@mikro-orm/postgresql';
+import {
+  BadRequestException,
   Injectable,
   InternalServerErrorException,
   Logger,
@@ -30,6 +35,12 @@ export class ClientService {
 
       return client;
     } catch (error) {
+      if (error instanceof UniqueConstraintViolationException) {
+        throw new BadRequestException(
+          'Client with this clientId already exists for this store',
+        );
+      }
+
       this.logger.fatal(error);
 
       throw new InternalServerErrorException(
@@ -38,7 +49,19 @@ export class ClientService {
     }
   }
 
-  async findAll(store: Store) {
+  async findAll() {
+    try {
+      const clients = await this.clientRepository.findAll();
+
+      return clients;
+    } catch (error) {
+      throw new InternalServerErrorException(
+        error.message || 'Something went wrong',
+      );
+    }
+  }
+
+  async findAllByStore(store: Store) {
     try {
       const clients = this.clientRepository.findAll({
         where: {

@@ -99,7 +99,7 @@ export class StoreService {
   async getClients(id: number) {
     try {
       const store = await this.findOne(id);
-      return this.clientService.findAll(store);
+      return this.clientService.findAllByStore(store);
     } catch (error) {
       throw error;
     }

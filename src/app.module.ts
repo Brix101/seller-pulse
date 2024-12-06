@@ -68,7 +68,7 @@ import { BullModule } from '@nestjs/bullmq';
   providers: [],
 })
 export class AppModule implements NestModule {
-  // OnModuleInit
+  //, OnModuleInit{
   // constructor(private readonly orm: MikroORM) {}
   //
   // async onModuleInit() {

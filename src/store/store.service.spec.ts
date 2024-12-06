@@ -177,13 +177,13 @@ describe('StoreService', () => {
       const store = new Store();
       const clients = [{ id: 1, name: 'Client' }];
       jest.spyOn(service, 'findOne').mockResolvedValue(store);
-      (clientService.findAll as jest.Mock).mockResolvedValue(clients);
+      (clientService.findAllByStore as jest.Mock).mockResolvedValue(clients);
 
       const result = await service.getClients(1);
 
       expect(result).toBe(clients);
       expect(service.findOne).toHaveBeenCalledWith(1);
-      expect(clientService.findAll).toHaveBeenCalledWith(store);
+      expect(clientService.findAllByStore).toHaveBeenCalledWith(store);
     });
   });
 });

@@ -194,6 +194,17 @@
       "schema": "public",
       "indexes": [
         {
+          "keyName": "client_client_id_store_id_unique",
+          "columnNames": [
+            "client_id",
+            "store_id"
+          ],
+          "composite": true,
+          "constraint": true,
+          "primary": false,
+          "unique": true
+        },
+        {
           "keyName": "client_pkey",
           "columnNames": [
             "id"

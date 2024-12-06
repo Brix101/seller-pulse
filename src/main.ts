@@ -6,7 +6,10 @@ import { HttpExceptionFilter } from './http-exception.filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    // logger: ['log', 'fatal', 'error', 'warn', 'debug', 'verbose'],
+    // bufferLogs: true,
+  });
 
   const configService = app.get(ConfigService);
   const port = configService.get('port');

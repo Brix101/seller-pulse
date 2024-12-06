@@ -22,6 +22,8 @@ import { MarketplaceModule } from './marketplace/marketplace.module';
 import mikroOrmConfig from './mikro-orm.config';
 import { SaleModule } from './sale/sale.module';
 import { StoreModule } from './store/store.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { BullModule } from '@nestjs/bullmq';
 
 @Module({
   imports: [
@@ -46,6 +48,13 @@ import { StoreModule } from './store/store.module';
       isGlobal: true,
       inject: [ConfigService],
     }),
+    BullModule.forRootAsync({
+      useFactory: (configService: ConfigService) => ({
+        connection: configService.get('redis'),
+      }),
+      inject: [ConfigService],
+    }),
+    ScheduleModule.forRoot(),
     StoreModule,
     ClientModule,
     ListingModule,

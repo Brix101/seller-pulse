@@ -35,7 +35,9 @@ import { StoreModule } from './store/store.module';
     CacheModule.registerAsync({
       useFactory: async (configService) => {
         const redisConfig = configService.get('redis');
+
         const store = await redisStore(redisConfig);
+
         return {
           store: store as unknown as CacheStore,
           ttl: 60 * 60000, // 3 minutes (milliseconds)
@@ -56,12 +58,13 @@ import { StoreModule } from './store/store.module';
   controllers: [],
   providers: [],
 })
-export class AppModule implements NestModule, OnModuleInit {
-  constructor(private readonly orm: MikroORM) {}
-
-  async onModuleInit() {
-    await this.orm.getMigrator().up();
-  }
+export class AppModule implements NestModule {
+  // OnModuleInit
+  // constructor(private readonly orm: MikroORM) {}
+  //
+  // async onModuleInit() {
+  //   await this.orm.getMigrator().up();
+  // }
 
   // for some reason the auth middlewares in profile and article modules are fired before the request context one,
   // so they would fail to access contextual EM. by registering the middleware directly in AppModule, we can get

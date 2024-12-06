@@ -12,7 +12,6 @@ const configSchema = z.object({
   DATABASE_NAME: z.string().default('seller-pulse'),
   REDIS_HOST: z.string(),
   REDIS_PORT: z.coerce.number().default(6379),
-  REDIS_USER: z.string().optional(),
   REDIS_PASSWORD: z.string().optional(),
   REDIS_SSL_ENABLED: z.boolean().default(false),
 });

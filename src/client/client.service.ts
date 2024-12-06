@@ -6,22 +6,27 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Store } from 'src/store/entities/store.entity';
+import { ClientRepository } from './client.repository';
 import { CreateClientDto } from './dto/create-client.dto';
-import { Client } from './entities/client.entity';
 import { UpdateClientDto } from './dto/update-client.dto';
 
 @Injectable()
 export class ClientService {
   private readonly logger = new Logger(ClientService.name);
 
-  constructor(private readonly em: EntityManager) {}
+  constructor(
+    private readonly em: EntityManager,
+    private readonly clientRepository: ClientRepository,
+  ) {}
 
   async create(store: Store, createClientDto: CreateClientDto) {
     try {
-      const fork = this.em.fork();
-      const client = fork.create(Client, { ...createClientDto, store });
+      const client = this.clientRepository.create({
+        ...createClientDto,
+        store,
+      });
 
-      await fork.persistAndFlush(client);
+      await this.em.persistAndFlush(client);
 
       return client;
     } catch (error) {
@@ -35,8 +40,7 @@ export class ClientService {
 
   async findAll(store: Store) {
     try {
-      const fork = this.em.fork();
-      const clients = fork.findAll(Client, {
+      const clients = this.clientRepository.findAll({
         where: {
           store,
         },
@@ -52,10 +56,7 @@ export class ClientService {
 
   async findOne(id: number) {
     try {
-      const fork = this.em.fork();
-      const client = await fork.findOneOrFail(Client, {
-        id,
-      });
+      const client = await this.clientRepository.findOneOrFail(id);
 
       return client;
     } catch (error) {
@@ -71,12 +72,11 @@ export class ClientService {
 
   async update(id: number, updateClientDto: UpdateClientDto) {
     try {
-      const fork = this.em.fork();
       const client = await this.findOne(id);
 
-      fork.assign(client, updateClientDto);
+      client.assign(updateClientDto);
 
-      await fork.persistAndFlush(client);
+      await this.em.persistAndFlush(client);
 
       return client;
     } catch (error) {

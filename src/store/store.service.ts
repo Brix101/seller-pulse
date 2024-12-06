@@ -1,4 +1,4 @@
-import { EntityManager, NotFoundError, wrap } from '@mikro-orm/postgresql';
+import { EntityManager, NotFoundError } from '@mikro-orm/postgresql';
 import {
   Injectable,
   InternalServerErrorException,
@@ -9,20 +9,21 @@ import { CreateClientDto } from 'src/client/dto/create-client.dto';
 import { CreateStoreDto } from './dto/create-store.dto';
 import { UpdateStoreDto } from './dto/update-store.dto';
 import { Store } from './entities/store.entity';
+import { StoreRepository } from './store.repository';
 
 @Injectable()
 export class StoreService {
   constructor(
     private readonly em: EntityManager,
+    private readonly storeRepository: StoreRepository,
     private readonly clientService: ClientService,
   ) {}
 
   async create(createStoreDto: CreateStoreDto) {
     try {
-      const fork = this.em.fork();
-      const store = fork.create(Store, createStoreDto);
+      const store = this.storeRepository.create(createStoreDto);
 
-      await fork.persistAndFlush(store);
+      await this.em.persistAndFlush(store);
 
       return store;
     } catch (error) {
@@ -34,10 +35,9 @@ export class StoreService {
 
   async findAll(): Promise<Store[]> {
     try {
-      const fork = this.em.fork();
-      return fork.findAll(Store, {
-        // where: { isActive: true },
-      });
+      const stores = await this.storeRepository.findAll();
+
+      return stores;
     } catch (error) {
       throw new InternalServerErrorException(
         error.message || 'Something went wrong',
@@ -47,10 +47,7 @@ export class StoreService {
 
   async findOne(id: number) {
     try {
-      const fork = this.em.fork();
-      const store = await fork.findOneOrFail(Store, {
-        id,
-      });
+      const store = await this.storeRepository.findOneOrFail(id);
 
       return store;
     } catch (error) {
@@ -66,12 +63,11 @@ export class StoreService {
 
   async update(id: number, updateStoreDto: UpdateStoreDto) {
     try {
-      const fork = this.em.fork();
       const store = await this.findOne(id);
 
-      wrap(store).assign(updateStoreDto);
+      store.assign(updateStoreDto);
 
-      await fork.persistAndFlush(store);
+      await this.em.persistAndFlush(store);
 
       return store;
     } catch (error) {
@@ -81,10 +77,9 @@ export class StoreService {
 
   async remove(id: number) {
     try {
-      const fork = this.em.fork();
       const store = await this.findOne(id);
 
-      return fork.nativeDelete(Store, { id: store.id });
+      return this.em.nativeDelete(Store, { id: store.id });
     } catch (error) {
       throw error;
     }

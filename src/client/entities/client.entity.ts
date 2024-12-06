@@ -2,16 +2,18 @@ import {
   Cascade,
   Collection,
   Entity,
+  EntityRepositoryType,
   Enum,
   ManyToOne,
   OneToMany,
   Property,
 } from '@mikro-orm/core';
 import { BaseEntity } from '../../common/entities/base.entity';
-import { Store } from '../../store/entities/store.entity';
-import { Marketplace } from '../../marketplace/entities/marketplace.entity';
-import { LWAExceptionErrorCode } from '../../lwa/exceptions/exception-error-code';
 import { TokenRequestMeta } from '../../lwa/dto/token-request-meta';
+import { LWAExceptionErrorCode } from '../../lwa/exceptions/exception-error-code';
+import { Marketplace } from '../../marketplace/entities/marketplace.entity';
+import { Store } from '../../store/entities/store.entity';
+import { ClientRepository } from '../client.repository';
 
 export enum ClientProvider {
   SELLING_PARTNER_API = 'SELLING_PARTNER_API',
@@ -23,8 +25,10 @@ export enum GrantType {
   REFRESH_TOKEN = 'refresh_token',
 }
 
-@Entity()
+@Entity({ repository: () => ClientRepository })
 export class Client extends BaseEntity {
+  [EntityRepositoryType]?: ClientRepository;
+
   @Enum({ items: () => ClientProvider })
   clientProvider: ClientProvider;
 

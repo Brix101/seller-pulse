@@ -1,6 +1,16 @@
-import { Cascade, Entity, Enum, ManyToOne, Property } from '@mikro-orm/core';
+import {
+  ArrayCollection,
+  Cascade,
+  Collection,
+  Entity,
+  Enum,
+  ManyToOne,
+  OneToMany,
+  Property,
+} from '@mikro-orm/core';
 import { BaseEntity } from '../../common/entities/base.entity';
 import { Store } from '../../store/entities/store.entity';
+import { Marketplace } from '../../marketplace/entities/marketplace.entity';
 
 export enum ClientProvider {
   SELLING_PARTNER_API = 'SELLING_PARTNER_API',
@@ -53,6 +63,10 @@ export class Client extends BaseEntity {
     nullable: false,
     serializer: (store) => store.id,
     serializedName: 'storeId',
+    // lazy: true,
   })
   store: Store;
+
+  @OneToMany(() => Marketplace, (m) => m.client, { cascade: [Cascade.ALL] })
+  marketplaces = new Collection<Marketplace>(this);
 }

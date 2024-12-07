@@ -2,7 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
 import { firstValueFrom } from 'rxjs';
 import { Client } from 'src/client/entities/client.entity';
-import { SP_API_URL } from 'src/common/constants';
+import { Region, SP_API_URL } from 'src/common/constants';
 import { LwaService } from 'src/lwa/lwa.service';
 import {
   MarketplaceEntry,
@@ -17,133 +17,133 @@ export class AmznMarketplaceService {
       marketplaceId: 'A2EUQ1WTGCTBG2',
       country: 'Canada',
       countryCode: 'CA',
-      region: 'NorthAmerica',
+      region: Region.NorthAmerica,
     },
     {
       marketplaceId: 'ATVPDKIKX0DER',
       country: 'United States of America',
       countryCode: 'US',
-      region: 'NorthAmerica',
+      region: Region.NorthAmerica,
     },
     {
       marketplaceId: 'A1AM78C64UM0Y8',
       country: 'Mexico',
       countryCode: 'MX',
-      region: 'NorthAmerica',
+      region: Region.NorthAmerica,
     },
     {
       marketplaceId: 'A2Q3Y263D00KWC',
       country: 'Brazil',
       countryCode: 'BR',
-      region: 'NorthAmerica',
+      region: Region.NorthAmerica,
     },
     {
       marketplaceId: 'A1RKKUPIHCS9HS',
       country: 'Spain',
       countryCode: 'ES',
-      region: 'Europe',
+      region: Region.Europe,
     },
     {
       marketplaceId: 'A1F83G8C2ARO7P',
       country: 'United Kingdom',
       countryCode: 'UK',
-      region: 'Europe',
+      region: Region.Europe,
     },
     {
       marketplaceId: 'A13V1IB3VIYZZH',
       country: 'France',
       countryCode: 'FR',
-      region: 'Europe',
+      region: Region.Europe,
     },
     {
       marketplaceId: 'AMEN7PMS3EDWL',
       country: 'Belgium',
       countryCode: 'BE',
-      region: 'Europe',
+      region: Region.Europe,
     },
     {
       marketplaceId: 'A1805IZSGTT6HS',
       country: 'Netherlands',
       countryCode: 'NL',
-      region: 'Europe',
+      region: Region.Europe,
     },
     {
       marketplaceId: 'A1PA6795UKMFR9',
       country: 'Germany',
       countryCode: 'DE',
-      region: 'Europe',
+      region: Region.Europe,
     },
     {
       marketplaceId: 'APJ6JRA9NG5V4',
       country: 'Italy',
       countryCode: 'IT',
-      region: 'Europe',
+      region: Region.Europe,
     },
     {
       marketplaceId: 'A2NODRKZP88ZB9',
       country: 'Sweden',
       countryCode: 'SE',
-      region: 'Europe',
+      region: Region.Europe,
     },
     {
       marketplaceId: 'AE08WJ6YKNBMC',
       country: 'South Africa',
       countryCode: 'ZA',
-      region: 'Europe',
+      region: Region.Europe,
     },
     {
       marketplaceId: 'A1C3SOZRARQ6R3',
       country: 'Poland',
       countryCode: 'PL',
-      region: 'Europe',
+      region: Region.Europe,
     },
     {
       marketplaceId: 'ARBP9OOSHTCHU',
       country: 'Egypt',
       countryCode: 'EG',
-      region: 'Europe',
+      region: Region.Europe,
     },
     {
       marketplaceId: 'A33AVAJ2PDY3EV',
       country: 'Turkey',
       countryCode: 'TR',
-      region: 'Europe',
+      region: Region.Europe,
     },
     {
       marketplaceId: 'A17E79C6D8DWNP',
       country: 'Saudi Arabia',
       countryCode: 'SA',
-      region: 'Europe',
+      region: Region.Europe,
     },
     {
       marketplaceId: 'A2VIGQ35RCS4UG',
       country: 'United Arab Emirates',
       countryCode: 'AE',
-      region: 'Europe',
+      region: Region.Europe,
     },
     {
       marketplaceId: 'A21TJRUUN4KGV',
       country: 'India',
       countryCode: 'IN',
-      region: 'Europe',
+      region: Region.Europe,
     },
     {
       marketplaceId: 'A19VAU5U5O7RUS',
       country: 'Singapore',
       countryCode: 'SG',
-      region: 'FarEast',
+      region: Region.FarEast,
     },
     {
       marketplaceId: 'A39IBJ37TRP1C6',
       country: 'Australia',
       countryCode: 'AU',
-      region: 'FarEast',
+      region: Region.FarEast,
     },
     {
       marketplaceId: 'A1VC38T7YXB528',
       country: 'Japan',
       countryCode: 'JP',
-      region: 'FarEast',
+      region: Region.FarEast,
     },
   ];
 
@@ -173,7 +173,7 @@ export class AmznMarketplaceService {
 
       const { data } = await firstValueFrom(
         this.httpService.get<MarketplaceParticipationResponse>(
-          SP_API_URL.NA + '/sellers/v1/marketplaceParticipations',
+          SP_API_URL.NorthAmerica + '/sellers/v1/marketplaceParticipations',
           {
             headers: {
               'x-amz-access-token': accessToken,

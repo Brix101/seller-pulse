@@ -1,8 +1,10 @@
+import { Region } from 'src/common/constants';
+
 export class MarketplaceEntry {
   marketplaceId: string;
   countryCode: string;
   country: string;
-  region: string;
+  region: Region;
 }
 
 export interface MarketplaceParticipation {

@@ -9,6 +9,7 @@ import {
   Property,
   Unique,
 } from '@mikro-orm/core';
+import { Region } from '../../common/constants';
 import { BaseEntity } from '../../common/entities/base.entity';
 import { RequestAccessTokenDto } from '../../lwa/dto/request-access-token.dto';
 import { LWAExceptionErrorCode } from '../../lwa/exceptions/exception-error-code';
@@ -45,6 +46,9 @@ export class Client extends BaseEntity {
 
   @Property({ columnType: 'text' })
   refreshToken: string;
+
+  @Enum({ items: () => Region })
+  region: Region;
 
   @Enum({ items: () => LWAExceptionErrorCode, nullable: true, default: null })
   error: LWAExceptionErrorCode;

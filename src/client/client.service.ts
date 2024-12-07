@@ -55,6 +55,7 @@ export class ClientService {
         where: {
           error: null,
         },
+        populate: ['marketplaces'],
       });
 
       return clients;
@@ -83,7 +84,9 @@ export class ClientService {
 
   async findOne(id: number) {
     try {
-      const client = await this.clientRepository.findOneOrFail(id);
+      const client = await this.clientRepository.findOneOrFail(id, {
+        populate: ['marketplaces'],
+      });
 
       return client;
     } catch (error) {

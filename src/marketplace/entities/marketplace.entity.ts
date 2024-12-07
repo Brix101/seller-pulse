@@ -2,11 +2,13 @@ import {
   Cascade,
   Entity,
   EntityRepositoryType,
+  Enum,
   ManyToOne,
   Property,
   Unique,
 } from '@mikro-orm/core';
 import { Client } from '../../client/entities/client.entity';
+import { Region } from '../../common/constants';
 import { BaseEntity } from '../../common/entities/base.entity';
 import { MarketplaceRepository } from '../marketplace.repository';
 
@@ -38,8 +40,8 @@ export class Marketplace extends BaseEntity {
   @Property()
   domainName: string;
 
-  @Property()
-  region: string;
+  @Enum({ items: () => Region })
+  region: Region;
 
   @ManyToOne(() => Client, {
     cascade: [Cascade.PERSIST, Cascade.REMOVE],

@@ -15,11 +15,10 @@ export class MarketplaceScheduler {
     private readonly amznMarketplaceService: AmznMarketplaceService,
   ) {}
 
-  // @Cron('0 0 0 * * *')
-  // @Cron('30 * * * * *')
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   @CreateRequestContext()
-  async handlerCron() {
+  async handleMarketplaceCronJob() {
+    this.logger.debug('Running marketplace cron job');
     const clients = await this.clientService.findAll();
 
     for (const client of clients) {
@@ -40,8 +39,12 @@ export class MarketplaceScheduler {
           }
         });
       } catch (err) {
-        this.logger.error(err);
+        this.logger.error(
+          err,
+          `Couldn't fetch marketplaces for client ${client.clientId}`,
+        );
       }
     }
+    this.logger.debug('Marketplace cron job completed');
   }
 }

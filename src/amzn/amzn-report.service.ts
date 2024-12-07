@@ -27,7 +27,7 @@ export class AmznReportService {
     client: Client,
     reportSpecification: ReportSpecificationDto,
   ) {
-    const reportKey = `${client.clientId}:${JSON.stringify(reportSpecification)}`;
+    const reportKey = `report:${client.clientId}:${JSON.stringify(reportSpecification)}`;
 
     const cachedReport =
       await this.cacheManager.get<CreateReportResponseDto>(reportKey);

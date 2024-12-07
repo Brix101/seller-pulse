@@ -7,4 +7,5 @@ export default registerAs('redis', () => ({
   password: process.env.REDIS_PASSWORD,
   ssl: process.env.REDIS_SSL === 'true',
   tls: process.env.REDIS_SSL === 'true',
+  maxRetriesPerRequest: 3,
 }));

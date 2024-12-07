@@ -2,14 +2,14 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
 import { catchError, firstValueFrom } from 'rxjs';
 import { Client } from 'src/client/entities/client.entity';
-import { ReportSpecificationDto } from './dto/report-specification.dto';
 import { SP_API_URL } from 'src/common/constants';
+import { LwaService } from 'src/lwa/lwa.service';
+import { ReportSpecificationDto } from './dto/report-specification.dto';
 import {
   CreateReportResponseDto,
   Report,
   ReportDocument,
 } from './dto/report.dto';
-import { LwaService } from 'src/lwa/lwa.service';
 
 @Injectable()
 export class AmznReportService {
@@ -21,6 +21,12 @@ export class AmznReportService {
     private readonly lwaService: LwaService,
   ) {}
 
+  /**
+   * Creates a report for the given client based on the provided report specification.
+   * @param client The client for whom the report is being created.
+   * @param reportSpecification The specifications for the report to be created.
+   * @returns The response data containing details of the created report.
+   */
   async createReport(
     client: Client,
     reportSpecification: ReportSpecificationDto,
@@ -52,6 +58,12 @@ export class AmznReportService {
     return data;
   }
 
+  /**
+   * Retrieves the report details for the given client and report response.
+   * @param client The client for whom the report is being retrieved.
+   * @param createReportResponse The response data from the report creation.
+   * @returns The report details.
+   */
   async getReport(
     client: Client,
     createReportResponse: CreateReportResponseDto,
@@ -85,6 +97,12 @@ export class AmznReportService {
     return data;
   }
 
+  /**
+   * Retrieves the report document for the given client and report.
+   * @param client The client for whom the report document is being retrieved.
+   * @param report The report containing the document ID.
+   * @returns The report document details.
+   */
   async getReportDocument(client: Client, report: Report) {
     const baseUrl = SP_API_URL[client.region] || SP_API_URL.NorthAmerica;
 

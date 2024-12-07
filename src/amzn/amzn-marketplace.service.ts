@@ -167,13 +167,23 @@ export class AmznMarketplaceService {
     });
   }
 
+  /**
+   * Retrieves marketplace participation data from the Selling Partner API.
+   * This function fetches data on the marketplaces in which the seller is participating.
+   * It filters the data based on certain criteria and maps it to a standardized format.
+   *
+   * @param client - The client entity containing information about the seller.
+   * @returns A promise that resolves to an array of objects representing the seller's participation in various marketplaces.
+   * Each object includes both the marketplace details and additional participation data.
+   */
   async getMarketplaceParticipations(client: Client) {
     try {
+      const baseUrl = SP_API_URL[client.region] || SP_API_URL.NorthAmerica;
       const accessToken = await this.lwaService.getAccessToken(client);
 
       const { data } = await firstValueFrom(
         this.httpService.get<MarketplaceParticipationResponse>(
-          SP_API_URL.NorthAmerica + '/sellers/v1/marketplaceParticipations',
+          baseUrl + '/sellers/v1/marketplaceParticipations',
           {
             headers: {
               'x-amz-access-token': accessToken,

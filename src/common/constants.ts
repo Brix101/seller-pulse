@@ -9,3 +9,7 @@ export const SP_API_URL: Record<Region, string> = {
   Europe: 'https://sellingpartnerapi-eu.amazon.com',
   FarEast: 'https://sellingpartnerapi-fe.amazon.com',
 };
+
+export const QUEUE_KEY = {
+  LISTING: 'listing',
+};

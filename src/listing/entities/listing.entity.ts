@@ -4,9 +4,10 @@ import {
   Enum,
   ManyToOne,
   Property,
+  Unique,
 } from '@mikro-orm/postgresql';
-import { BaseEntity } from '../../common/entities/base.entity';
 import { Client } from '../../client/entities/client.entity';
+import { BaseEntity } from '../../common/entities/base.entity';
 
 export enum ListingStatus {
   ACTIVE = 'active',
@@ -15,6 +16,7 @@ export enum ListingStatus {
 }
 
 @Entity()
+@Unique({ properties: ['asin', 'sellerSKU', 'client'] })
 export class Listing extends BaseEntity {
   @Property()
   sellerSKU: string;

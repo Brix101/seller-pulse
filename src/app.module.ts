@@ -1,13 +1,8 @@
 import { MikroOrmMiddleware, MikroOrmModule } from '@mikro-orm/nestjs';
-import { MikroORM } from '@mikro-orm/postgresql';
 import { CacheModule, CacheStore } from '@nestjs/cache-manager';
-import {
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  OnModuleInit,
-} from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ScheduleModule } from '@nestjs/schedule';
 import { redisStore } from 'cache-manager-ioredis-yet';
 import { AmznModule } from './amzn/amzn.module';
 import { ClientModule } from './client/client.module';
@@ -22,8 +17,7 @@ import { MarketplaceModule } from './marketplace/marketplace.module';
 import mikroOrmConfig from './mikro-orm.config';
 import { SaleModule } from './sale/sale.module';
 import { StoreModule } from './store/store.module';
-import { ScheduleModule } from '@nestjs/schedule';
-import { BullModule } from '@nestjs/bullmq';
+import { BullModule } from '@nestjs/bull';
 
 @Module({
   imports: [
@@ -50,7 +44,7 @@ import { BullModule } from '@nestjs/bullmq';
     }),
     BullModule.forRootAsync({
       useFactory: (configService: ConfigService) => ({
-        connection: configService.get('redis'),
+        redis: configService.get('redis'),
       }),
       inject: [ConfigService],
     }),

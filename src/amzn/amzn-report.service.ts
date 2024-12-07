@@ -23,19 +23,6 @@ export class AmznReportService {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
-  /**
-   * Generates a unique identifier for the given clientId and reportSpecification.
-   * @param clientId The client ID.
-   * @param reportSpecification The report specification.
-   * @returns The unique identifier.
-   */
-  private createReportKey(
-    clientId: string,
-    reportSpecification: ReportSpecificationDto,
-  ): string {
-    return `${clientId}:${JSON.stringify(reportSpecification)}`;
-  }
-
   private async getExistingReport(
     client: Client,
     reportSpecification: ReportSpecificationDto,
@@ -67,7 +54,6 @@ export class AmznReportService {
     );
 
     if (cachedReport) {
-      this.logger.debug('Returning cached report for client', client.clientId);
       return cachedReport;
     }
 

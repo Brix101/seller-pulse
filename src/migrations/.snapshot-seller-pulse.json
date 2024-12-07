@@ -506,6 +506,18 @@
       "schema": "public",
       "indexes": [
         {
+          "keyName": "listing_asin_seller_sku_client_id_unique",
+          "columnNames": [
+            "asin",
+            "seller_sku",
+            "client_id"
+          ],
+          "composite": true,
+          "constraint": true,
+          "primary": false,
+          "unique": true
+        },
+        {
           "keyName": "listing_pkey",
           "columnNames": [
             "id"

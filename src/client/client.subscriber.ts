@@ -15,5 +15,6 @@ export class ClientSubscriber implements EventSubscriber<Client> {
 
   async afterCreate(args: EventArgs<Client>) {
     console.log(args.entity);
+    // TODO add event listener here to update markerplaces data
   }
 }

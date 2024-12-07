@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsString } from 'class-validator';
 import { ClientProvider, GrantType } from '../entities/client.entity';
+import { Region } from 'src/common/constants';
 
 export class CreateClientDto {
   @ApiProperty({
@@ -8,6 +9,12 @@ export class CreateClientDto {
   })
   @IsEnum(ClientProvider)
   clientProvider: ClientProvider;
+
+  @ApiProperty({
+    enum: Region,
+  })
+  @IsEnum(Region)
+  region: Region;
 
   @ApiProperty({
     description: 'The client ID',

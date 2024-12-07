@@ -1,5 +1,6 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable, Logger } from '@nestjs/common';
+import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { catchError, firstValueFrom } from 'rxjs';
 import { Client } from 'src/client/entities/client.entity';
 import { SP_API_URL } from 'src/common/constants';
@@ -19,7 +20,36 @@ export class AmznReportService {
   constructor(
     private readonly httpService: HttpService,
     private readonly lwaService: LwaService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
+
+  /**
+   * Generates a unique identifier for the given clientId and reportSpecification.
+   * @param clientId The client ID.
+   * @param reportSpecification The report specification.
+   * @returns The unique identifier.
+   */
+  private createReportKey(
+    clientId: string,
+    reportSpecification: ReportSpecificationDto,
+  ): string {
+    return `${clientId}:${JSON.stringify(reportSpecification)}`;
+  }
+
+  private async getExistingReport(
+    client: Client,
+    reportSpecification: ReportSpecificationDto,
+  ) {
+    const reportKey = `${client.clientId}:${JSON.stringify(reportSpecification)}`;
+
+    const cachedReport =
+      await this.cacheManager.get<CreateReportResponseDto>(reportKey);
+
+    return {
+      reportKey,
+      cachedReport,
+    };
+  }
 
   /**
    * Creates a report for the given client based on the provided report specification.
@@ -31,6 +61,16 @@ export class AmznReportService {
     client: Client,
     reportSpecification: ReportSpecificationDto,
   ) {
+    const { reportKey, cachedReport } = await this.getExistingReport(
+      client,
+      reportSpecification,
+    );
+
+    if (cachedReport) {
+      this.logger.debug('Returning cached report for client', client.clientId);
+      return cachedReport;
+    }
+
     const baseUrl = SP_API_URL[client.region] || SP_API_URL.NorthAmerica;
 
     const accessToken = await this.lwaService.getAccessToken(client);
@@ -54,6 +94,9 @@ export class AmznReportService {
           }),
         ),
     );
+
+    // Store the result in the cache
+    await this.cacheManager.set(reportKey, data);
 
     return data;
   }

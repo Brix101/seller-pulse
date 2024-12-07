@@ -17,7 +17,7 @@ import { UpdateClientDto } from './dto/update-client.dto';
 
 @Injectable()
 export class ClientService {
-  private readonly logger = new Logger(ClientService.name);
+  private logger = new Logger(ClientService.name);
 
   constructor(
     private readonly em: EntityManager,

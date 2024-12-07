@@ -14,7 +14,7 @@ import {
 
 @Injectable()
 export class AmznReportService {
-  private readonly logger = new Logger(AmznReportService.name);
+  private logger = new Logger(AmznReportService.name);
   private readonly BASE_REPORT_URI = '/reports/2021-06-30';
 
   constructor(

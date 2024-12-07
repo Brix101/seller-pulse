@@ -10,7 +10,7 @@ import { ListingService } from './listing.service';
 
 @Processor(QUEUE_KEY.LISTING)
 export class ListingReportProcessor {
-  private readonly logger = new Logger(ListingReportProcessor.name);
+  private logger = new Logger(ListingReportProcessor.name);
 
   constructor(
     private readonly amznReportService: AmznReportService,

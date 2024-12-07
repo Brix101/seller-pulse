@@ -11,7 +11,7 @@ import {
 
 @Injectable()
 export class AmznMarketplaceService {
-  private readonly logger = new Logger(AmznMarketplaceService.name);
+  private logger = new Logger(AmznMarketplaceService.name);
   private marketplaceEntries: Array<MarketplaceEntry> = [
     {
       marketplaceId: 'A2EUQ1WTGCTBG2',

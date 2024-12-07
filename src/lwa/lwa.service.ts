@@ -11,8 +11,10 @@ import { LWAExceptionErrorCode } from './exceptions/exception-error-code';
 
 @Injectable()
 export class LwaService {
-  private readonly logger = new Logger(LwaService.name);
-  private URL: string = 'https://api.amazon.com/auth/o2/token';
+  private logger = new Logger(LwaService.name);
+
+  private readonly URL = 'https://api.amazon.com/auth/o2/token';
+  private readonly PREFIX = 'lwa:';
 
   constructor(
     private readonly httpService: HttpService,
@@ -70,14 +72,16 @@ export class LwaService {
     const ttl = refreshResponseDto.expires_in * 1000 - 60000;
 
     await this.cacheManager.set(
-      client.clientId,
+      this.PREFIX + client.clientId,
       refreshResponseDto.access_token,
       ttl,
     );
   }
 
   async getAccessToken(client: Client): Promise<string> {
-    const token = await this.cacheManager.get<string>(client.clientId);
+    const token = await this.cacheManager.get<string>(
+      this.PREFIX + client.clientId,
+    );
 
     if (token) {
       return token;

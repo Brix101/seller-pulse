@@ -7,7 +7,7 @@ import { ListingStatus } from './entities/listing.entity';
 
 @Injectable()
 export class ListingService {
-  private readonly logger = new Logger(ListingService.name);
+  private logger = new Logger(ListingService.name);
 
   constructor(private readonly httpService: HttpService) {}
 

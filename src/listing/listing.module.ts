@@ -6,7 +6,8 @@ import { QUEUE_KEY } from 'src/common/constants';
 import { ListingReportProcessor } from './listing-report.processor';
 import { ListingScheduler } from './listing.scheduler';
 import { ListingService } from './listing.service';
-import { BullModule } from '@nestjs/bull';
+import { BullModule } from '@nestjs/bullmq';
+import { ListingQueueEventsListener } from './listing-report.queueEvents';
 
 @Module({
   imports: [
@@ -15,6 +16,11 @@ import { BullModule } from '@nestjs/bull';
     BullModule.registerQueue({ name: QUEUE_KEY.LISTING }),
     HttpModule,
   ],
-  providers: [ListingService, ListingScheduler, ListingReportProcessor],
+  providers: [
+    ListingService,
+    ListingScheduler,
+    ListingReportProcessor,
+    ListingQueueEventsListener,
+  ],
 })
 export class ListingModule {}

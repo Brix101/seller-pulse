@@ -1,8 +1,6 @@
 import { CreateRequestContext, MikroORM } from '@mikro-orm/postgresql';
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { AmznMarketplaceService } from 'src/amzn/amzn-marketplace.service';
-import { Marketplace } from 'src/marketplace/entities/marketplace.entity';
 import { ClientService } from './client.service';
 
 @Injectable()

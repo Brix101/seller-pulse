@@ -8,5 +8,5 @@ export default registerAs('redis', () => ({
   ssl: process.env.REDIS_SSL === 'true',
   tls: process.env.REDIS_SSL === 'true',
   enableReadyCheck: false,
-  lazyConnect: true,
+  // lazyConnect: true,
 }));

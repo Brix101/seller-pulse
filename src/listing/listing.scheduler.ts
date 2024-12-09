@@ -1,8 +1,8 @@
 import { CreateRequestContext, MikroORM } from '@mikro-orm/postgresql';
-import { InjectQueue } from '@nestjs/bull';
+import { InjectQueue } from '@nestjs/bullmq';
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { Queue } from 'bull';
+import { Queue } from 'bullmq';
 import { AmznReportService } from 'src/amzn/amzn-report.service';
 import {
   ReportSpecificationDto,
@@ -11,7 +11,7 @@ import {
 import { ClientService } from 'src/client/client.service';
 import { QUEUE_KEY } from 'src/common/constants';
 import { QueuedListingDto } from './dto/queued-listing.dto';
-import { Listing } from './entities/listing.entity';
+import { ParseListingDto } from './dto/parse-listing.dto';
 
 @Injectable()
 export class ListingScheduler {
@@ -22,7 +22,7 @@ export class ListingScheduler {
     private readonly clientService: ClientService,
     private readonly amznReportService: AmznReportService,
     @InjectQueue(QUEUE_KEY.LISTING)
-    private readonly listingQueue: Queue<QueuedListingDto>,
+    private readonly listingQueue: Queue<QueuedListingDto, ParseListingDto[]>,
   ) {}
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
@@ -44,29 +44,16 @@ export class ListingScheduler {
           reportSpecification,
         );
 
-        const job = await this.listingQueue.add(
+        await this.listingQueue.add(
           QUEUE_KEY.LISTING + ':parse',
           {
             client,
             reportResponse,
           },
           {
-            delay: 5000,
+            removeOnComplete: true,
           },
         );
-
-        const parsedListings = await job.finished();
-
-        await this.orm.em.transactional(async (em) => {
-          for (const listing of parsedListings) {
-            const newListing = em.create(Listing, {
-              ...listing,
-              client,
-            });
-
-            await em.upsert(Listing, newListing);
-          }
-        });
       } catch (err) {
         this.logger.error(
           err,

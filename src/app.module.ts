@@ -1,5 +1,5 @@
 import { MikroOrmMiddleware, MikroOrmModule } from '@mikro-orm/nestjs';
-import { BullModule } from '@nestjs/bull';
+import { BullModule } from '@nestjs/bullmq';
 import { CacheModule, CacheStore } from '@nestjs/cache-manager';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -44,14 +44,7 @@ import { StoreModule } from './store/store.module';
     }),
     BullModule.forRootAsync({
       useFactory: (configService: ConfigService) => ({
-        redis: configService.get('redis'),
-        settings: {
-          stalledInterval: 2 * 60 * 60 * 1000, // Check for stalled jobs every 2 hours
-        },
-        limiter: {
-          max: 10, // Process a maximum of 10 jobs
-          duration: 1000, // Within 1 second
-        },
+        connection: configService.get('redis'),
       }),
       inject: [ConfigService],
     }),

@@ -37,6 +37,8 @@ export class ClientService {
 
       await this.em.persistAndFlush(client);
 
+      delete client.marketplaces;
+
       return client;
     } catch (error) {
       if (error instanceof UniqueConstraintViolationException) {

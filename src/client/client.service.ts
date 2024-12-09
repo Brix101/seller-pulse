@@ -112,8 +112,13 @@ export class ClientService {
 
       client.assign(updateClientDto);
 
-      await this.em.persistAndFlush(client);
-
+      await this.em.nativeUpdate(
+        Client,
+        {
+          id,
+        },
+        updateClientDto,
+      );
       return client;
     } catch (error) {
       throw error;
@@ -126,7 +131,15 @@ export class ClientService {
         await this.amznMarketplaceService.getMarketplaceParticipations(client);
 
       await this.em.transactional(async (em) => {
-        em.assign(client, { region: marketplaces[0].region });
+        await em.nativeUpdate(
+          Client,
+          {
+            id: client.id,
+          },
+          {
+            region: marketplaces[0].region,
+          },
+        );
 
         for (const marketplace of marketplaces) {
           const newMarketplace = em.create(Marketplace, {

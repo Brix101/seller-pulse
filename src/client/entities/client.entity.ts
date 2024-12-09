@@ -47,7 +47,7 @@ export class Client extends BaseEntity {
   @Property({ columnType: 'text' })
   refreshToken: string;
 
-  @Enum({ items: () => Region })
+  @Enum({ items: () => Region, nullable: true })
   region: Region;
 
   @Enum({ items: () => LWAExceptionErrorCode, nullable: true, default: null })

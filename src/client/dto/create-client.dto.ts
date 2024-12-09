@@ -25,6 +25,7 @@ export class CreateClientDto {
 
   @ApiProperty({
     enum: GrantType,
+    example: GrantType.REFRESH_TOKEN,
   })
   @IsEnum(GrantType)
   grantType: GrantType;

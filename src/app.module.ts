@@ -1,5 +1,4 @@
 import { MikroOrmMiddleware, MikroOrmModule } from '@mikro-orm/nestjs';
-import { BullModule } from '@nestjs/bullmq';
 import { CacheModule, CacheStore } from '@nestjs/cache-manager';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -18,6 +17,7 @@ import { MarketplaceModule } from './marketplace/marketplace.module';
 import mikroOrmConfig from './mikro-orm.config';
 import { SaleModule } from './sale/sale.module';
 import { StoreModule } from './store/store.module';
+import { BullModule } from '@nestjs/bull';
 
 @Module({
   imports: [
@@ -45,6 +45,9 @@ import { StoreModule } from './store/store.module';
     BullModule.forRootAsync({
       useFactory: (configService: ConfigService) => ({
         connection: configService.get('redis'),
+        settings: {
+          drainDelay: 3600,
+        },
       }),
       inject: [ConfigService],
     }),

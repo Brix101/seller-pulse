@@ -17,7 +17,7 @@ import { MarketplaceModule } from './marketplace/marketplace.module';
 import mikroOrmConfig from './mikro-orm.config';
 import { SaleModule } from './sale/sale.module';
 import { StoreModule } from './store/store.module';
-import { BullModule } from '@nestjs/bull';
+import { BullModule } from '@nestjs/bullmq';
 
 @Module({
   imports: [
@@ -45,9 +45,6 @@ import { BullModule } from '@nestjs/bull';
     BullModule.forRootAsync({
       useFactory: (configService: ConfigService) => ({
         connection: configService.get('redis'),
-        settings: {
-          drainDelay: 3600,
-        },
       }),
       inject: [ConfigService],
     }),

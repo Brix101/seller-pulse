@@ -36,7 +36,7 @@ export class ListingScheduler {
       const marketplaceIds = client.marketplaces.map((m) => m.marketplaceId);
 
       listingQueues.push({
-        name: QUEUE_KEY.LISTING + ':parse',
+        name: QUEUE_KEY.LISTING + ':parse:' + client.clientId,
         data: {
           client,
           specification: {

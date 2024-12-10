@@ -1,7 +1,7 @@
-import { CreateReportResponseDto } from 'src/amzn/dto/report.dto';
+import { ReportSpecificationDto } from 'src/amzn/dto/report-specification.dto';
 import { Client } from 'src/client/entities/client.entity';
 
 export class QueuedListingDto {
   client: Client;
-  reportResponse: CreateReportResponseDto;
+  specification: ReportSpecificationDto;
 }

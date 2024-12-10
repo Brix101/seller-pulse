@@ -10,8 +10,8 @@ import {
 } from 'src/amzn/dto/report-specification.dto';
 import { ClientService } from 'src/client/client.service';
 import { QUEUE_KEY } from 'src/common/constants';
-import { QueuedListingDto } from './dto/queued-listing.dto';
 import { ParseListingDto } from './dto/parse-listing.dto';
+import { QueuedListingDto } from './dto/queued-listing.dto';
 
 @Injectable()
 export class ListingScheduler {
@@ -20,7 +20,6 @@ export class ListingScheduler {
   constructor(
     private readonly orm: MikroORM,
     private readonly clientService: ClientService,
-    private readonly amznReportService: AmznReportService,
     @InjectQueue(QUEUE_KEY.LISTING)
     private readonly listingQueue: Queue<QueuedListingDto, ParseListingDto[]>,
   ) {}
@@ -31,36 +30,28 @@ export class ListingScheduler {
     this.logger.debug('Running Listing cron job');
     const clients = await this.clientService.findAll();
 
+    const listingQueues: Parameters<typeof this.listingQueue.addBulk>[0] = [];
+
     for (const client of clients) {
-      try {
-        const marketplaceIds = client.marketplaces.map((m) => m.marketplaceId);
-        const reportSpecification: ReportSpecificationDto = {
-          reportType: ReportType.GET_MERCHANT_LISTINGS_ALL_DATA,
-          marketplaceIds,
-        };
+      const marketplaceIds = client.marketplaces.map((m) => m.marketplaceId);
 
-        const reportResponse = await this.amznReportService.createReport(
+      listingQueues.push({
+        name: QUEUE_KEY.LISTING + ':parse',
+        data: {
           client,
-          reportSpecification,
-        );
-
-        await this.listingQueue.add(
-          QUEUE_KEY.LISTING + ':parse',
-          {
-            client,
-            reportResponse,
+          specification: {
+            reportType: ReportType.GET_MERCHANT_LISTINGS_ALL_DATA,
+            marketplaceIds,
           },
-          {
-            removeOnComplete: true,
-          },
-        );
-      } catch (err) {
-        this.logger.error(
-          err,
-          `Couldn't fetch Listings for client ${client.clientId}`,
-        );
-      }
+        },
+        opts: {
+          removeOnComplete: true,
+        },
+      });
     }
+
+    await this.listingQueue.addBulk(listingQueues);
+
     this.logger.debug('Listing cron job completed');
   }
 }

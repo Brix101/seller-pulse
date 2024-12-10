@@ -3,11 +3,7 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { Queue } from 'bullmq';
-import { AmznReportService } from 'src/amzn/amzn-report.service';
-import {
-  ReportSpecificationDto,
-  ReportType,
-} from 'src/amzn/dto/report-specification.dto';
+import { ReportType } from 'src/amzn/dto/report-specification.dto';
 import { ClientService } from 'src/client/client.service';
 import { QUEUE_KEY } from 'src/common/constants';
 import { ParseListingDto } from './dto/parse-listing.dto';

@@ -5,7 +5,7 @@ import { QUEUE_KEY } from 'src/common/constants';
 import { ParseListingDto } from './dto/parse-listing.dto';
 import { QueuedListingDto } from './dto/queued-listing.dto';
 import { ListingService } from './listing.service';
-import { Processor, WorkerHost } from '@nestjs/bullmq';
+import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { MikroORM } from '@mikro-orm/core';
 import { Listing } from './entities/listing.entity';
@@ -41,13 +41,13 @@ export class ListingReportProcessor extends WorkerHost {
 
     const pollReport = async (): Promise<Report> => {
       this.logger.debug('Polling report' + reportResponse.reportId);
-      const result = await this.amznReportService.getReport(
+      const report = await this.amznReportService.getReport(
         client,
         reportResponse,
       );
 
-      if (result.processingStatus === ProcessingStatus.DONE) {
-        return result;
+      if (report.processingStatus === ProcessingStatus.DONE) {
+        return report;
       }
 
       return new Promise((resolve) => {
@@ -83,5 +83,16 @@ export class ListingReportProcessor extends WorkerHost {
     });
 
     return parseListing;
+  }
+
+  @OnWorkerEvent('completed')
+  onCompleted(job: Job<QueuedListingDto, ParseListingDto[]>) {
+    const { id, name, queueName, finishedOn, returnvalue } = job;
+
+    const completionTime = finishedOn ? new Date(finishedOn).toISOString() : '';
+    this.logger.log(job.data);
+    this.logger.log(
+      `Job id: ${id}, name: ${name} completed in queue ${queueName} on ${completionTime}. Result: ${returnvalue}`,
+    );
   }
 }

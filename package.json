@@ -1,6 +1,10 @@
 {
   "name": "sellerpulse",
   "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
   "scripts": {
     "dev": "dotenv -- turbo dev --no-cache  --continue",
     "build": "turbo build"

@@ -1,5 +1,5 @@
 {
-  "name": "web",
+  "name": "@sellerpulse/web",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -11,6 +11,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@sellerpulse/api": "workspace:^",
+    "@tanstack/react-query": "^5.62.3",
+    "@tanstack/react-query-devtools": "^5.62.3",
+    "@trpc/client": "11.0.0-rc.660",
+    "@trpc/react-query": "11.0.0-rc.660",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },

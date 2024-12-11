@@ -1,6 +1,7 @@
 packages:
   - apps/*
   - packages/*
+
 catalog:
   superjson: ^2.2.2
   typescript: ^5.7.2

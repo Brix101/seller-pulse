@@ -36,7 +36,7 @@ export const queryClient = new QueryClient({
       retryOnMount: false,
     },
   },
-  queryCache: new QueryCache({
+  queryCache: new    QueryCache({
     onError: (error) => {
       toast.error(
         `An error occurred: ${error instanceof Error ? error.message : 'Unknown error'}`,

@@ -1,3 +1,4 @@
+// @see https://prettier.io/docs/en/configuration.html
 /** @typedef {import("prettier").Config} PrettierConfig */
 /** @typedef {import("@ianvs/prettier-plugin-sort-imports").PluginConfig} SortImportsConfig */
 

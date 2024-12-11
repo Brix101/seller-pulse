@@ -5,7 +5,7 @@ import reactConfig from "@sellerpulse/eslint-config/react";
 /** @type {import('typescript-eslint').Config} */
 export default [
   {
-    ignores: [".dist/**"],
+    ignores: ["dist/**"],
   },
   ...baseConfig,
   ...reactConfig,

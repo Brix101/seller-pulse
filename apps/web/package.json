@@ -21,7 +21,7 @@
     "react-dom": "^18.3.1",
     "react-router": "^7.0.2",
     "sonner": "^1.7.1",
-    "superjson": "^2.2.2"
+    "superjson": "catalog:"
   },
   "devDependencies": {
     "@eslint/js": "^9.15.0",

@@ -1,6 +1,7 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalEnv": ["PACKAGE_VERSION", "NODE_ENV"],
+  "globalDependencies": ["**/.env"],
+  "globalEnv": ["PORT", "NODE_ENV"],
   "ui": "tui",
   "tasks": {
     "build": {

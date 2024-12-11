@@ -1,3 +1,5 @@
+import 'dotenv/config';
+
 import { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
 import { initServer, appRouter } from './utils/server';
 

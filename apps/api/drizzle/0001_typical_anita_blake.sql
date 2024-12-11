@@ -1,0 +1,1 @@
+ALTER TABLE "stores" ALTER COLUMN "updated_at" SET DEFAULT now();

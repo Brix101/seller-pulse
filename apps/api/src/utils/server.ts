@@ -4,6 +4,10 @@ import cookieParser from 'cookie-parser';
 import * as trpcExpress from '@trpc/server/adapters/express';
 import { createContext, createTRPCRouter, publicProcedure } from './trpc';
 import { z } from 'zod';
+import { migrate } from 'drizzle-orm/node-postgres/migrator';
+import { db } from '../db/index';
+import path from 'path';
+// const __dirname = import.meta.dirname;
 
 const port = process.env.PORT || 5000;
 const app = express();
@@ -29,10 +33,24 @@ app.use(
   trpcExpress.createExpressMiddleware({
     router: appRouter,
     createContext,
+    onError(opts) {
+      const { error } = opts;
+      console.error('Error:', error);
+      if (error.code === 'INTERNAL_SERVER_ERROR') {
+        console.log('Internal server error');
+        // send to bug reporting
+      }
+    },
   }),
 );
 
 export async function initServer() {
+  // console.log('about to migrate postgres');
+  // await migrate(db, {
+  //   migrationsFolder: path.join(__dirname, '../../drizzle'),
+  // });
+  // console.log('postgres migration complete');
+
   const server = app.listen(port, () => {
     console.log(`Server started on http://localhost:${port}`);
   });

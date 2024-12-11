@@ -1,5 +1,4 @@
 import { AppRouter } from '@sellerpulse/api';
-import superjson from 'superjson';
 import { MutationCache, QueryCache, QueryClient } from '@tanstack/react-query';
 import {
   createTRPCQueryUtils,
@@ -9,6 +8,7 @@ import {
   loggerLink,
 } from '@trpc/react-query';
 import { toast } from 'sonner';
+import superjson from 'superjson';
 
 export type ReactQueryOptions = inferReactQueryProcedureOptions<AppRouter>;
 

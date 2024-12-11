@@ -1,8 +1,9 @@
-import { initTRPC } from '@trpc/server';
-import * as trpcExpress from '@trpc/server/adapters/express';
-import superjson from 'superjson';
-import { ZodError } from 'zod';
-import db from '../db';
+import type * as trpcExpress from "@trpc/server/adapters/express";
+import { initTRPC } from "@trpc/server";
+import superjson from "superjson";
+import { ZodError } from "zod";
+
+import db from "../db";
 
 export const createContext = ({
   req,
@@ -11,7 +12,7 @@ export const createContext = ({
   return {
     req,
     res,
-    db
+    db,
   };
 };
 

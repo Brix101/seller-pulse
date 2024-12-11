@@ -37,6 +37,12 @@ export const appRouter = createTRPCRouter({
   createStore: publicProcedure
     .input(createStoreSchema)
     .mutation(async ({ ctx, input }) => {
+      await new Promise((resolve, reject) => {
+        setTimeout(() => {
+          reject(new Error("Sample error: Operation timed out"));
+        }, 5000);
+      });
+
       const [store] = await ctx.db
         .insert(stores)
         .values({

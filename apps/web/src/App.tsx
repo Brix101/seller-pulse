@@ -1,3 +1,4 @@
+import { RouterOutputs } from "@sellerpulse/api";
 import { useQueryClient } from '@tanstack/react-query';
 import { getQueryKey } from '@trpc/react-query';
 import './App.css';
@@ -7,19 +8,39 @@ import viteLogo from '/vite.svg';
 
 function App() {
   const queryClient = useQueryClient();
-  const { data, isLoading } = trpc.getUser.useQuery("Vite");
+  const { data, isLoading } = trpc.getUser.useQuery("Vite")
 
   const {data: stores, isLoading: isStoresLoading} = trpc.getStores.useQuery()
 
   const storesKey = getQueryKey(trpc.getStores, undefined, "query")
+  
+
 
   const createStore = trpc.createStore.useMutation({
-    onSuccess(data, variables, context) {
-      queryClient.setQueryData(storesKey, (oldData) => {
+    onMutate(data) {
+      queryClient.cancelQueries({
+        queryKey: storesKey,
+      })
+      const prevData = queryClient.getQueryData<RouterOutputs["getStores"]>(storesKey)
+      queryClient.setQueryData<RouterOutputs["getStores"]>(storesKey, (oldData) => {
+
+        if(!oldData) return []
+        return [{...data, id: 0, createdAt: new Date(), isActive: true}, ...oldData]
+      })
+
+      return { prevData}
+    },
+    onSuccess(data) {
+      queryClient.setQueryData<RouterOutputs["getStores"]>(storesKey, (oldData) => {
         if(!oldData) return []
         return [data, ...oldData]
       })
     },
+    onError(err, variables, context) {
+      if(context?.prevData) {
+        queryClient.setQueryData<RouterOutputs["getStores"]>(storesKey, context.prevData)
+      }
+    }
   })
 
 

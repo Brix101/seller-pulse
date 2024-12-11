@@ -10,8 +10,10 @@
   },
   "scripts": {
     "start": "NODE_ENV=production node dist/index.js",
-    "dev": "tsx watch src",
     "build": "tsc",
+    "dev": "tsx watch src",
+    "format": "prettier --check . --ignore-path ../../.gitignore",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false",
     "drizzle": "drizzle-kit"
   },
   "dependencies": {
@@ -23,11 +25,12 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@sellerpulse/typescript": "workspace:*",
+    "@sellerpulse/tsconfig": "workspace:*",
     "@types/cookie-parser": "^1.4.8",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "tsx": "^4.19.2",
+    "prettier": "catalog:",
     "typescript": "catalog:"
   }
 }

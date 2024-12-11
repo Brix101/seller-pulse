@@ -1,5 +1,5 @@
 {
-  "extends": "@sellerpulse/typescript/base.json",
+  "extends": "@sellerpulse/tsconfig/base.json",
   "include": ["src"],
   "exclude": ["node_modules"]
 }

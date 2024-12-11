@@ -1,11 +1,11 @@
 import 'dotenv/config';
 
-import { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
-import { initServer, appRouter } from './utils/server';
+import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
+import type { AppRouter } from './utils/server';
+import { initServer } from './utils/server';
 
 void initServer();
 
-type AppRouter = typeof appRouter;
 
 /**
  * Inference helpers for input types

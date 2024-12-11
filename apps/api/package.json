@@ -12,6 +12,7 @@
     "start": "NODE_ENV=production node dist/index.js",
     "build": "tsc",
     "dev": "tsx watch src",
+    "clean": "git clean -xdf .cache .turbo dist node_modules",
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false",
     "drizzle": "drizzle-kit"
@@ -20,17 +21,23 @@
     "@trpc/server": "11.0.0-rc.660",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
+    "drizzle-orm": "^0.38.0",
     "express": "^4.21.2",
+    "postgres": "^3.4.5",
     "superjson": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@sellerpulse/eslint-config": "workspace:*",
+    "@sellerpulse/prettier-config": "workspace:*",
     "@sellerpulse/tsconfig": "workspace:*",
     "@types/cookie-parser": "^1.4.8",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
-    "tsx": "^4.19.2",
+    "drizzle-kit": "^0.30.0",
     "prettier": "catalog:",
+    "tsx": "^4.19.2",
     "typescript": "catalog:"
-  }
+  },
+  "prettier": "@sellerpulse/prettier-config"
 }

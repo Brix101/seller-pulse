@@ -1,20 +1,16 @@
-import express from 'express';
-import cors from 'cors';
-import cookieParser from 'cookie-parser';
 import * as trpcExpress from '@trpc/server/adapters/express';
-import { createContext, createTRPCRouter, publicProcedure } from './trpc';
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
+import express from 'express';
 import { z } from 'zod';
-import { migrate } from 'drizzle-orm/node-postgres/migrator';
-import { db } from '../db/index';
-import path from 'path';
+import { createContext, createTRPCRouter, publicProcedure } from './trpc';
 // const __dirname = import.meta.dirname;
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT ?? 5000;
 const app = express();
 
 export const appRouter = createTRPCRouter({
   getUser: publicProcedure.input(z.string()).query((opts) => {
-    opts.input;
     return {
       id: opts.input,
       name: 'React',
@@ -44,7 +40,9 @@ app.use(
   }),
 );
 
-export async function initServer() {
+export type AppRouter = typeof appRouter;
+
+export function initServer() {
   // console.log('about to migrate postgres');
   // await migrate(db, {
   //   migrationsFolder: path.join(__dirname, '../../drizzle'),
@@ -64,7 +62,7 @@ export async function initServer() {
         console.error(`process exit due to ${error}`);
         console.error(err);
         process.exit(1);
-      } catch (_) {
+      } catch {
         process.exit(1);
       }
     });

@@ -1,16 +1,31 @@
 {
   "name": "@sellerpulse/api",
   "version": "1.0.0",
-  "description": "",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./src/index.ts"
+    }
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "NODE_ENV=production node dist/index.js",
+    "dev": "tsx watch src",
+    "build": "tsc"
   },
   "dependencies": {
     "@trpc/server": "11.0.0-rc.660",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
     "express": "^4.21.2",
+    "superjson": "^2.2.2",
     "zod": "^3.24.0"
   },
   "devDependencies": {
-    "@types/express": "^5.0.0"
+    "@types/cookie-parser": "^1.4.8",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
   }
 }

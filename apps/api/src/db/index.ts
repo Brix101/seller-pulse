@@ -7,7 +7,7 @@ const connectionString =
 
 // Disable prefetch as it is not supported for "Transaction" pool mode
 export const client = postgres(connectionString, { prepare: false });
-export const db = drizzle(client, {
+export default drizzle(client, {
   logger: true,
   casing: 'snake_case',
   schema: {

@@ -18,6 +18,7 @@
     "drizzle": "drizzle-kit"
   },
   "dependencies": {
+    "@sellerpulse/schema": "workspace:*",
     "@trpc/server": "11.0.0-rc.660",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",

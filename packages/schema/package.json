@@ -1,15 +1,33 @@
 {
   "name": "@sellerpulse/schema",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./src/index.ts"
+    }
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "clean": "git clean -xdf .cache .turbo dist node_modules",
+    "dev": "tsc",
+    "format": "prettier --check . --ignore-path ../../.gitignore",
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false"
+  },
   "dependencies": {
     "zod": "catalog:"
-  }
+  },
+  "devDependencies": {
+    "@sellerpulse/eslint-config": "workspace:*",
+    "@sellerpulse/prettier-config": "workspace:*",
+    "@sellerpulse/tsconfig": "workspace:*",
+    "eslint": "catalog:",
+    "prettier": "catalog:",
+    "typescript": "catalog:"
+  },
+  "prettier": "@sellerpulse/prettier-config"
 }

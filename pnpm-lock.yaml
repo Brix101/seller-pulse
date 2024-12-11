@@ -26,9 +26,6 @@ importers:
 
   .:
     dependencies:
-      dotenv-cli:
-        specifier: ^7.4.4
-        version: 7.4.4
       turbo:
         specifier: ^2.3.3
         version: 2.3.3
@@ -38,6 +35,9 @@ importers:
 
   apps/api:
     dependencies:
+      '@sellerpulse/schema':
+        specifier: workspace:^
+        version: link:../../packages/schema
       '@trpc/server':
         specifier: 11.0.0-rc.660
         version: 11.0.0-rc.660(typescript@5.7.2)
@@ -231,6 +231,25 @@ importers:
       zod:
         specifier: 'catalog:'
         version: 3.24.1
+    devDependencies:
+      '@sellerpulse/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint
+      '@sellerpulse/prettier-config':
+        specifier: workspace:*
+        version: link:../prettier
+      '@sellerpulse/tsconfig':
+        specifier: workspace:*
+        version: link:../typescript
+      eslint:
+        specifier: 'catalog:'
+        version: 9.16.0
+      prettier:
+        specifier: 'catalog:'
+        version: 3.4.2
+      typescript:
+        specifier: 'catalog:'
+        version: 5.7.2
 
   packages/typescript: {}
 
@@ -1505,20 +1524,8 @@ packages:
     resolution: {integrity: sha512-35mSku4ZXK0vfCuHEDAwt55dg2jNajHZ1odvF+8SSr82EsZY4QmXfuWso8oEd8zRhVObSN18aM0CjSdoBX7zIw==}
     engines: {node: '>=0.10.0'}
 
-  dotenv-cli@7.4.4:
-    resolution: {integrity: sha512-XkBYCG0tPIes+YZr4SpfFv76SQrV/LeCE8CI7JSEMi3VR9MvTihCGTOtbIexD6i2mXF+6px7trb1imVCXSNMDw==}
-    hasBin: true
-
-  dotenv-expand@10.0.0:
-    resolution: {integrity: sha512-GopVGCpVS1UKH75VKHGuQFqS1Gusej0z4FyQkPdwjil2gNIv+LNsqBlboOzpJFZKVT95GkCyWJbBSdFEFUWI2A==}
-    engines: {node: '>=12'}
-
   dotenv@16.0.3:
     resolution: {integrity: sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==}
-    engines: {node: '>=12'}
-
-  dotenv@16.4.7:
-    resolution: {integrity: sha512-47qPchRCykZC03FhkYAhrvwU4xDBFIj1QPqaarj6mdM/hgUzfPHcpkHJOn3mJAufFeeAxAzeGsr5X0M4k6fLZQ==}
     engines: {node: '>=12'}
 
   drizzle-kit@0.30.0:
@@ -3913,18 +3920,7 @@ snapshots:
     dependencies:
       esutils: 2.0.3
 
-  dotenv-cli@7.4.4:
-    dependencies:
-      cross-spawn: 7.0.6
-      dotenv: 16.4.7
-      dotenv-expand: 10.0.0
-      minimist: 1.2.8
-
-  dotenv-expand@10.0.0: {}
-
   dotenv@16.0.3: {}
-
-  dotenv@16.4.7: {}
 
   drizzle-kit@0.30.0:
     dependencies:

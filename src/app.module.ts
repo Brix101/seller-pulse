@@ -13,6 +13,7 @@ import { ListingModule } from './listing/listing.module';
 import { MarketplaceModule } from './marketplace/marketplace.module';
 import mikroOrmConfig from './mikro-orm.config';
 import { StoreModule } from './store/store.module';
+import { AmznModule } from './amzn/amzn.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { StoreModule } from './store/store.module';
     ClientModule,
     MarketplaceModule,
     ListingModule,
+    AmznModule,
   ],
   controllers: [AppController],
   providers: [AppService],

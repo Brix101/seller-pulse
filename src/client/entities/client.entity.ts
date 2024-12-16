@@ -2,6 +2,7 @@ import {
   Cascade,
   Collection,
   Entity,
+  EntityRepositoryType,
   Enum,
   ManyToOne,
   OneToMany,
@@ -12,7 +13,8 @@ import { Region } from 'src/common/constants';
 import { BaseEntity } from 'src/common/entities/base.entity';
 import { Marketplace } from 'src/marketplace/entities/marketplace.entity';
 import { Store } from 'src/store/entities/store.entity';
-import { RequestAccessTokenDto } from '../dto/lwa-request.dto';
+import { RequestAccessTokenDto } from '../../amzn/dto/lwa-request.dto';
+import { ClientRepository } from '../client.repository';
 import { LWAExceptionErrorCode } from '../exceptions/exception-error-code';
 
 export enum ClientProvider {
@@ -25,9 +27,11 @@ export enum GrantType {
   REFRESH_TOKEN = 'refresh_token',
 }
 
-@Entity()
+@Entity({ repository: () => ClientRepository })
 @Unique({ properties: ['clientId', 'store'] })
 export class Client extends BaseEntity {
+  [EntityRepositoryType]?: ClientRepository;
+
   @Enum({ items: () => ClientProvider })
   clientProvider: ClientProvider;
 
@@ -43,25 +47,26 @@ export class Client extends BaseEntity {
   @Property({ columnType: 'text' })
   refreshToken: string;
 
-  @Enum({ items: () => Region, nullable: true, default: null })
-  region: Region;
+  @Enum({ items: () => Region, nullable: true, default: null, hidden: true })
+  region?: Region;
 
   @Enum({ items: () => LWAExceptionErrorCode, nullable: true, default: null })
-  error: LWAExceptionErrorCode;
+  error?: LWAExceptionErrorCode;
 
   @Property({ columnType: 'text', nullable: true, default: null })
-  errorDescription: string;
+  errorDescription?: string;
 
   @ManyToOne(() => Store, {
     cascade: [Cascade.PERSIST, Cascade.REMOVE],
     nullable: false,
     serializer: (store) => store.id,
     serializedName: 'storeId',
-    // lazy: true,
   })
   store: Store;
 
-  @OneToMany(() => Marketplace, (m) => m.client, { cascade: [Cascade.ALL] })
+  @OneToMany(() => Marketplace, (m) => m.client, {
+    cascade: [Cascade.ALL],
+  })
   marketplaces = new Collection<Marketplace>(this);
 
   toRequestAcessTokenDTO(): RequestAccessTokenDto {

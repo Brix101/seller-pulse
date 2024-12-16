@@ -1,4 +1,4 @@
-import { GrantType } from '../entities/client.entity';
+import { GrantType } from '../../client/entities/client.entity';
 
 export class RequestAccessTokenDto {
   client_id: string;

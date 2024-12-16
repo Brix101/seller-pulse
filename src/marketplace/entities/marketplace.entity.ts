@@ -41,6 +41,7 @@ export class Marketplace extends BaseEntity {
     cascade: [Cascade.PERSIST, Cascade.REMOVE],
     nullable: false,
     lazy: true,
+    hidden: true,
   })
   client: Client;
 }

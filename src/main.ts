@@ -9,11 +9,11 @@ import { HttpExceptionFilter } from './http-exception.filter';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
 
-  await app.get(MikroORM).getSchemaGenerator().ensureDatabase();
-  await app.get(MikroORM).getSchemaGenerator().updateSchema();
-
   const configService = app.get(ConfigService<Config>);
   const port = configService.get('PORT');
+
+  await app.get(MikroORM).getSchemaGenerator().ensureDatabase();
+  await app.get(MikroORM).getSchemaGenerator().updateSchema();
 
   app.setGlobalPrefix('api');
   app.useGlobalPipes(

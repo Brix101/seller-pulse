@@ -2,21 +2,28 @@ import {
   Cascade,
   Collection,
   Entity,
+  EntityRepositoryType,
   OneToMany,
   Opt,
   Property,
 } from '@mikro-orm/core';
 import { Client } from 'src/client/entities/client.entity';
 import { BaseEntity } from 'src/common/entities/base.entity';
+import { StoreRepository } from '../store.repository';
 
-@Entity()
+@Entity({ repository: () => StoreRepository })
 export class Store extends BaseEntity {
+  [EntityRepositoryType]?: StoreRepository;
+
   @Property()
   name: string;
 
   @Property()
   isActive: boolean & Opt = true;
 
-  @OneToMany(() => Client, (c) => c.store, { cascade: [Cascade.ALL] })
+  @OneToMany(() => Client, (c) => c.store, {
+    cascade: [Cascade.ALL],
+    hidden: true,
+  })
   clients = new Collection<Client>(this);
 }

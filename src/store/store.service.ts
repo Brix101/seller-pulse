@@ -1,5 +1,4 @@
-import { EntityRepository, NotFoundError } from '@mikro-orm/core';
-import { InjectRepository } from '@mikro-orm/nestjs';
+import { NotFoundError } from '@mikro-orm/core';
 import { EntityManager } from '@mikro-orm/postgresql';
 import {
   Injectable,
@@ -9,18 +8,18 @@ import {
 import { CreateStoreDto } from './dto/create-store.dto';
 import { UpdateStoreDto } from './dto/update-store.dto';
 import { Store } from './entities/store.entity';
+import { StoreRepository } from './store.repository';
 
 @Injectable()
 export class StoreService {
   constructor(
-    @InjectRepository(Store)
-    private readonly storeRepository: EntityRepository<Store>,
+    private readonly repo: StoreRepository,
     private readonly em: EntityManager,
   ) {}
 
   async create(createStoreDto: CreateStoreDto) {
     try {
-      const store = this.storeRepository.create(createStoreDto);
+      const store = this.repo.create(createStoreDto);
 
       await this.em.persistAndFlush(store);
 
@@ -34,7 +33,7 @@ export class StoreService {
 
   async findAll(): Promise<Store[]> {
     try {
-      const stores = await this.storeRepository.findAll();
+      const stores = await this.repo.findAll();
 
       return stores;
     } catch (error) {
@@ -46,7 +45,7 @@ export class StoreService {
 
   async findOne(id: number) {
     try {
-      const store = await this.storeRepository.findOneOrFail(id);
+      const store = await this.repo.findOneOrFail(id);
 
       return store;
     } catch (error) {
@@ -64,9 +63,7 @@ export class StoreService {
     try {
       const store = await this.findOne(id);
 
-      store.assign(updateStoreDto);
-
-      await this.em.persistAndFlush(store);
+      await this.em.nativeUpdate(Store, { id: store.id }, updateStoreDto);
 
       return store;
     } catch (error) {

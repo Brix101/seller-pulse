@@ -1,26 +1,86 @@
-import { Injectable } from '@nestjs/common';
+import { EntityRepository, NotFoundError } from '@mikro-orm/core';
+import { InjectRepository } from '@mikro-orm/nestjs';
+import { EntityManager } from '@mikro-orm/postgresql';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateStoreDto } from './dto/create-store.dto';
 import { UpdateStoreDto } from './dto/update-store.dto';
+import { Store } from './entities/store.entity';
 
 @Injectable()
 export class StoreService {
-  create(createStoreDto: CreateStoreDto) {
-    return 'This action adds a new store';
+  constructor(
+    @InjectRepository(Store)
+    private readonly storeRepository: EntityRepository<Store>,
+    private readonly em: EntityManager,
+  ) {}
+
+  async create(createStoreDto: CreateStoreDto) {
+    try {
+      const store = this.storeRepository.create(createStoreDto);
+
+      await this.em.persistAndFlush(store);
+
+      return store;
+    } catch (error) {
+      throw new InternalServerErrorException(
+        error.message || 'Something went wrong',
+      );
+    }
   }
 
-  findAll() {
-    return `This action returns all store`;
+  async findAll(): Promise<Store[]> {
+    try {
+      const stores = await this.storeRepository.findAll();
+
+      return stores;
+    } catch (error) {
+      throw new InternalServerErrorException(
+        error.message || 'Something went wrong',
+      );
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} store`;
+  async findOne(id: number) {
+    try {
+      const store = await this.storeRepository.findOneOrFail(id);
+
+      return store;
+    } catch (error) {
+      if (error instanceof NotFoundError) {
+        throw new NotFoundException(`Store with id ${id} not found`);
+      }
+
+      throw new InternalServerErrorException(
+        error.message || 'Something went wrong',
+      );
+    }
   }
 
-  update(id: number, updateStoreDto: UpdateStoreDto) {
-    return `This action updates a #${id} store`;
+  async update(id: number, updateStoreDto: UpdateStoreDto) {
+    try {
+      const store = await this.findOne(id);
+
+      store.assign(updateStoreDto);
+
+      await this.em.persistAndFlush(store);
+
+      return store;
+    } catch (error) {
+      throw error;
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} store`;
+  async remove(id: number) {
+    try {
+      const store = await this.findOne(id);
+
+      return this.em.nativeDelete(Store, { id: store.id });
+    } catch (error) {
+      throw error;
+    }
   }
 }

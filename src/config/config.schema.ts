@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const databaseConfigSchema = z.object({
+export const dbConfigSchema = z.object({
   DB_HOST: z.string(),
   DB_PORT: z.coerce.number().default(5432),
   DB_USER: z.string(),
@@ -8,7 +8,7 @@ const databaseConfigSchema = z.object({
   DB_NAME: z.string().default('seller-pulse'),
 });
 
-const redisConfigSchema = z.object({
+export const redisConfigSchema = z.object({
   REDIS_HOST: z.string(),
   REDIS_PORT: z.coerce.number().default(6379),
   REDIS_USER: z.string().optional(),
@@ -23,10 +23,10 @@ const configSchema = z
       .default('development'),
     PORT: z.coerce.number().default(3000),
   })
-  .merge(databaseConfigSchema)
+  .merge(dbConfigSchema)
   .merge(redisConfigSchema);
 
-export type DatabaseConfig = z.infer<typeof databaseConfigSchema>;
+export type DbConfig = z.infer<typeof dbConfigSchema>;
 export type RedisConfig = z.infer<typeof redisConfigSchema>;
 export type Config = z.infer<typeof configSchema>;
 

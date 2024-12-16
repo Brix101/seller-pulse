@@ -62,6 +62,7 @@ export class StoreService {
   async update(id: number, updateStoreDto: UpdateStoreDto) {
     try {
       const store = await this.findOne(id);
+      store.assign(updateStoreDto);
 
       await this.em.nativeUpdate(Store, { id: store.id }, updateStoreDto);
 
@@ -75,7 +76,9 @@ export class StoreService {
     try {
       const store = await this.findOne(id);
 
-      return this.em.nativeDelete(Store, { id: store.id });
+      await this.em.nativeDelete(Store, { id: store.id });
+
+      return store;
     } catch (error) {
       throw error;
     }

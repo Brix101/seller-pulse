@@ -7,15 +7,15 @@ import { Config } from './config/config.schema';
 import { HttpExceptionFilter } from './http-exception.filter';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { bufferLogs: true });
+
+  await app.get(MikroORM).getSchemaGenerator().ensureDatabase();
+  await app.get(MikroORM).getSchemaGenerator().updateSchema();
 
   const configService = app.get(ConfigService<Config>);
   const port = configService.get('PORT');
 
-  await app.get(MikroORM).getSchemaGenerator().ensureDatabase();
-  await app.get(MikroORM).getSchemaGenerator().updateSchema();
   app.setGlobalPrefix('api');
-
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
@@ -26,6 +26,8 @@ async function bootstrap() {
     }),
   );
   app.useGlobalFilters(new HttpExceptionFilter());
+  // Starts listening for shutdown hooks
+  app.enableShutdownHooks();
 
   await app.listen(port);
 }

@@ -100,6 +100,24 @@ export class ClientService {
     }
   }
 
+  async findAllbyStoreId(storeId: number) {
+    try {
+      const store = await this.em.findOneOrFail(Store, storeId);
+
+      const clients = await this.clientRepository.findAll({
+        where: {
+          store,
+        },
+      });
+
+      return clients;
+    } catch (error) {
+      throw new InternalServerErrorException(
+        error.message || 'Something went wrong',
+      );
+    }
+  }
+
   async findOne(id: number) {
     try {
       const client = await this.clientRepository.findOneOrFail(id, {

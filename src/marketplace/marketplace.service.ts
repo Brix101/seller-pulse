@@ -36,7 +36,6 @@ export class MarketplaceService {
               region: marketplace.region,
             };
           }
-
           return acc;
         },
         {} as Record<string, Partial<Marketplace>>,

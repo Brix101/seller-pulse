@@ -59,8 +59,7 @@ export class Client extends BaseEntity {
   @ManyToOne(() => Store, {
     cascade: [Cascade.PERSIST, Cascade.REMOVE],
     nullable: false,
-    serializer: (store) => store.id,
-    serializedName: 'storeId',
+    hidden: true,
   })
   store: Store;
 

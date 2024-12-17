@@ -109,7 +109,10 @@ export class ClientService {
       return client;
     } catch (error) {
       if (error instanceof NotFoundError) {
-        throw new NotFoundException(`Client with id ${id} not found`);
+        throw new NotFoundException(
+          error.name,
+          error.message || 'Client not found',
+        );
       }
 
       throw new InternalServerErrorException(

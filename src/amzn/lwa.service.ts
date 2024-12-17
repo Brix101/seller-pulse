@@ -22,12 +22,10 @@ export class LwaService {
     private readonly cacheService: CacheService,
   ) {}
 
-  private async refreshAccessToken(
-    client: Client,
-  ): Promise<RefreshResponseDto> {
+  private async refreshAccessToken(client: Client): Promise<string> {
     const requestAccessTokenDto = client.toRequestAcessTokenDTO();
 
-    this.logger.debug(`Refreshing token for client ${client.clientId}`);
+    this.logger.debug('Refreshing token', client.clientId);
 
     const { data } = await firstValueFrom(
       this.httpService
@@ -51,7 +49,7 @@ export class LwaService {
               },
             );
 
-            this.logger.warn(
+            this.logger.error(
               { clientId: client.clientId, ...data },
               'Error refreshing token',
             );
@@ -61,13 +59,13 @@ export class LwaService {
         ),
     );
 
-    await this.cacheService.set(
+    const accessToken = await this.cacheService.set(
       `${this.PREFIX}${client.clientId}`,
       data.access_token,
       data.expires_in * 1000 - 60000,
     );
 
-    return data;
+    return accessToken;
   }
 
   async getAccessToken(client: Client): Promise<string> {
@@ -79,8 +77,8 @@ export class LwaService {
       return cachedToken;
     }
 
-    const result = await this.refreshAccessToken(client);
+    const newAccessToken = await this.refreshAccessToken(client);
 
-    return result.access_token;
+    return newAccessToken;
   }
 }

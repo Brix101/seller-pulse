@@ -10,7 +10,7 @@ export enum ProcessingStatus {
   IN_QUEUE = 'IN_QUEUE',
 }
 
-export class Report {
+export class ReportDto {
   marketplaceIds?: string[]; // Optional: A list of marketplace identifiers for the report
   reportId: string; // Required: The identifier for the report
   reportType: string; // Required: The report type

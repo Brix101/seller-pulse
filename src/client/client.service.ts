@@ -9,6 +9,7 @@ import {
   InternalServerErrorException,
   Logger,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { AmznMarketplaceService } from 'src/amzn/amzn-marketplace.service';
 import { Region } from 'src/common/constants';
@@ -37,6 +38,31 @@ export class ClientService {
         ...data,
         store,
       });
+      const marketplaces =
+        await this.amznMarketplaceService.getMarketplaceParticipations(client);
+
+      const newMarketplaces = marketplaces.map((marketplace) =>
+        this.em.create(Marketplace, {
+          ...marketplace,
+          client,
+        }),
+      );
+
+      client.marketplaces.add(newMarketplaces);
+
+      const regionCount = marketplaces.reduce(
+        (acc, marketplace) => {
+          acc[marketplace.region] = (acc[marketplace.region] || 0) + 1;
+          return acc;
+        },
+        {} as Record<Region, number>,
+      );
+
+      const mostRegion = Object.entries(regionCount).reduce((a, b) =>
+        b[1] > a[1] ? b : a,
+      )[0];
+
+      client.region = Region[mostRegion as keyof typeof Region];
 
       await this.em.persistAndFlush(client);
 
@@ -44,15 +70,16 @@ export class ClientService {
     } catch (error) {
       if (error instanceof UniqueConstraintViolationException) {
         throw new BadRequestException(
+          error.name,
           'clientId already registered for this store',
         );
       }
 
-      this.logger.fatal(error);
+      if (error instanceof UnauthorizedException) {
+        throw error;
+      }
 
-      throw new InternalServerErrorException(
-        error.message || 'Something went wrong',
-      );
+      throw new InternalServerErrorException(error || 'Something went wrong');
     }
   }
 
@@ -160,10 +187,7 @@ export class ClientService {
         );
       });
     } catch (err) {
-      this.logger.error(
-        err,
-        `Failed to update marketplaces for client ${client.clientId}`,
-      );
+      throw err;
     }
   }
 }

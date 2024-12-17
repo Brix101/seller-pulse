@@ -1,5 +1,10 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { firstValueFrom } from 'rxjs';
 import { Client } from 'src/client/entities/client.entity';
 import { Region, SP_API_URL } from 'src/common/constants';
@@ -220,8 +225,11 @@ export class AmznMarketplaceService {
 
       return marketplaces;
     } catch (error) {
-      this.logger.error(error);
-      throw error;
+      if (error instanceof UnauthorizedException) {
+        throw error;
+      }
+
+      throw new InternalServerErrorException(error);
     }
   }
 }

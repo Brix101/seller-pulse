@@ -1,6 +1,6 @@
 import { EntityManager } from '@mikro-orm/core';
 import { HttpService } from '@nestjs/axios';
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { AxiosError } from 'axios';
 import { catchError, firstValueFrom } from 'rxjs';
 import { CacheService } from 'src/cache/cache.service';
@@ -51,11 +51,12 @@ export class LwaService {
               },
             );
 
-            this.logger.error(data, 'Error refreshing token');
-
-            throw new Error(
-              `Error refreshing token for client ${client.clientId}: ${data.error} - ${data.error_description}`,
+            this.logger.warn(
+              { clientId: client.clientId, ...data },
+              'Error refreshing token',
             );
+
+            throw new UnauthorizedException(data.error, data.error_description);
           }),
         ),
     );
@@ -63,7 +64,7 @@ export class LwaService {
     await this.cacheService.set(
       `${this.PREFIX}${client.clientId}`,
       data.access_token,
-      data.expires_in - 60,
+      data.expires_in * 1000 - 60000,
     );
 
     return data;

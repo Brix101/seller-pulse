@@ -31,6 +31,7 @@
     "@nestjs/core": "^10.0.0",
     "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/schedule": "^4.1.2",
     "axios": "^1.7.9",
     "cacheable": "^1.8.6",
     "class-transformer": "^0.5.1",

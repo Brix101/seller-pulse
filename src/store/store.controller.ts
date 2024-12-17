@@ -7,13 +7,17 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
+import { MarketplaceService } from 'src/marketplace/marketplace.service';
 import { CreateStoreDto } from './dto/create-store.dto';
 import { UpdateStoreDto } from './dto/update-store.dto';
 import { StoreService } from './store.service';
 
 @Controller('store')
 export class StoreController {
-  constructor(private readonly storeService: StoreService) {}
+  constructor(
+    private readonly storeService: StoreService,
+    private readonly marketplaceService: MarketplaceService,
+  ) {}
 
   @Post()
   create(@Body() createStoreDto: CreateStoreDto) {
@@ -38,5 +42,10 @@ export class StoreController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.storeService.remove(+id);
+  }
+
+  @Get(':id/marketplaces')
+  findAllMarketplaces(@Param('id') id: string) {
+    return this.marketplaceService.findAllByStoreId(+id);
   }
 }

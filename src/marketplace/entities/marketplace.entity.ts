@@ -1,6 +1,7 @@
 import {
   Cascade,
   Entity,
+  EntityRepositoryType,
   Enum,
   ManyToOne,
   Property,
@@ -9,17 +10,22 @@ import {
 import { Client } from 'src/client/entities/client.entity';
 import { Region } from 'src/common/constants';
 import { BaseEntity } from 'src/common/entities/base.entity';
+import { MarketplaceRepository } from '../marketplace.repository';
 
-@Entity()
+@Entity({
+  repository: () => MarketplaceRepository,
+})
 @Unique({ properties: ['marketplaceId', 'client'] })
 export class Marketplace extends BaseEntity {
+  [EntityRepositoryType]?: MarketplaceRepository;
+
   @Property()
   name: string;
 
   @Property()
   country: string;
 
-  @Property()
+  @Property({ primary: true })
   marketplaceId: string;
 
   @Property()

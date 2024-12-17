@@ -13,8 +13,8 @@ import { StoreRepository } from './store.repository';
 @Injectable()
 export class StoreService {
   constructor(
-    private readonly repo: StoreRepository,
     private readonly em: EntityManager,
+    private readonly repo: StoreRepository,
   ) {}
 
   async create(createStoreDto: CreateStoreDto) {

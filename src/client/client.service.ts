@@ -50,7 +50,7 @@ export class ClientService {
 
       client.marketplaces.add(newMarketplaces);
 
-      const regionCount = marketplaces.reduce(
+      const regionRecord = marketplaces.reduce(
         (acc, marketplace) => {
           acc[marketplace.region] = (acc[marketplace.region] || 0) + 1;
           return acc;
@@ -58,7 +58,7 @@ export class ClientService {
         {} as Record<Region, number>,
       );
 
-      const mostRegion = Object.entries(regionCount).reduce((a, b) =>
+      const mostRegion = Object.entries(regionRecord).reduce((a, b) =>
         b[1] > a[1] ? b : a,
       )[0];
 
